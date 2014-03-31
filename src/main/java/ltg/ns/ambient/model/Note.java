@@ -1,18 +1,20 @@
 package ltg.ns.ambient.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Note {
 	
 	private String _id;
 	private String author;
+	private String classroom;
+	private String school;
 	private String body;
 	private String created_at;
 	
-	public Note(String _id, String author, String body, String created_at) {
+	public Note(String _id, String school, String classroom, String author, String body, String created_at) {
 		this._id = _id;
+		this.classroom = classroom;
 		this.author = author;
+		this.school = school;
 		this.body = body;
 		this.created_at = created_at;
 	}
@@ -21,6 +23,14 @@ public class Note {
 		return _id;
 	}
 
+	public String getSchool() {
+		return school;
+	}
+	
+	public String getClassroom() {
+		return classroom;
+	}
+	
 	public String getAuthor() {
 		return author;
 	}
@@ -40,13 +50,8 @@ public class Note {
 	
 	
 	@Override
-	public String toString() {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return mapper.writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+	public String toString() {	
+		return author;
 	}
 
 }

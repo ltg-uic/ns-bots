@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ltg.commons.JSONHTTPClient;
+import ltg.ns.ambient.model.Classrooms;
 import ltg.ns.ambient.model.Note;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,8 +24,8 @@ public class NotesPoller extends Poller implements Runnable {
 		while (!Thread.interrupted()) {
 			Set<Note> notes = new HashSet<>();
 			// Fetch all notes
-			for (NotesURLs_Enum url: NotesURLs_Enum.values()) {
-				notes.addAll(parseNotes(JSONHTTPClient.GET(url.getURL())));
+			for (Classrooms url: Classrooms.values()) {
+				notes.addAll(parseNotes(url, JSONHTTPClient.GET(url.getNotesURL())));
 			}
 			// Check if anything new happened, update notes and notify observers
 			if (!newAndOldNotesAreTheSame(notes)) {
@@ -43,11 +44,13 @@ public class NotesPoller extends Poller implements Runnable {
 	}
 
 
-	private Set<Note> parseNotes(JsonNode get) {
+	private Set<Note> parseNotes(Classrooms url, JsonNode get) {
 		Set<Note> notes = new HashSet<>();
 		for (JsonNode o: get)
 			notes.add( new Note( o.get("_id").get("$oid").textValue(), 
-					o.get("author").textValue(), 
+					url.getSchool(), 
+					url.getClassroom(),
+					o.get("author").textValue(),
 					o.get("body").textValue(), 
 					o.get("created_at").get("$date").textValue()));
 		return notes;
