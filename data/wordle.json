@@ -1,0 +1,51 @@
+{
+    "event": "wordle_full_init",
+    "payload": {}
+}
+
+{
+    "event": "wordle_full_init_r",
+    "payload": {
+    	{
+	        "group": "whatevs",
+			"class": "whatevs",
+			"school": "whatevs",
+			"wordle" : [
+				{
+					"word1" : 12,	
+				},
+				...
+			]
+		}
+    }
+}
+
+{
+    "event": "wordle_full_update",
+    "payload": {
+        ...
+    }
+}
+
+
+
+
+
+{
+    "event": "wordle_grid_init",
+    "payload": {}
+}
+
+{
+    "event": "wordle_grid_init_r",
+    "payload": {
+    	...
+    }
+}
+
+{
+    "event": "wordle_grid_update",
+    "payload": {
+        ...
+    }
+}

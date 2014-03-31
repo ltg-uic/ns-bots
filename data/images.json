@@ -1,0 +1,58 @@
+{
+    "event": "images_full_init",
+    "payload": {}
+}
+
+{
+    "event": "images_full_init_r",
+    "payload": {
+        "image_url": "whatever",
+        "group": "whatevs",
+		"class": "whatevs",
+		"school": "whatevs"
+    }
+}
+
+{
+    "event": "images_full_update",
+    "payload": {
+        "image_url": "whatever",
+        "group": "whatevs",
+		"class": "whatevs",
+		"school": "whatevs"
+    }
+}
+
+
+
+
+{
+    "event": "images_grid_init",
+    "payload": {}
+}
+
+{
+    "event": "images_grid_init_r",
+    "payload": {
+        "grid": [
+            {
+                "image_url": "whatever",
+                "group": "whatevs",
+                "class": "whatevs",
+                "school": "whatevs"
+            },
+			...
+        ]
+    }
+}
+
+{
+    "event": "images_grid_update",
+    "payload": {
+        "image_url": "whatever",
+        "group": "whatevs",
+        "class": "whatevs",
+        "school": "whatevs"
+    }
+}
+

@@ -1,0 +1,20 @@
+{
+    "event": "XXX_init",
+    "payload": {
+    	"class_id" : "safari-ben"
+    }
+}
+
+{
+    "event": "XXX_init_r",
+    "payload": {
+    	...
+    }
+}
+
+{
+    "event": "XXX_update",
+    "payload": {
+        ...
+    }
+}
