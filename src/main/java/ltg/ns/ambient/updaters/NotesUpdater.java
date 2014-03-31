@@ -10,7 +10,9 @@ import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.ns.ambient.model.Note;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
@@ -51,20 +53,38 @@ public class NotesUpdater extends AbstractUpdater {
 		return JsonNodeFactory.instance.objectNode().put("school", rn.getSchool())
 				.put("class", rn.getClassroom())
 				.put("group", rn.getAuthor())
-				.put("note_body", rn.getBody());
+				.put("note_body", rn.getRandomBody());
 	}
 
 	@Override
 	public synchronized JsonNode gridInit(LTGEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+		ObjectNode payload = JsonNodeFactory.instance.objectNode();
+		ArrayNode grid = payload.putArray("grid"); 
+		for (int i=0; i<9; i++) {
+			Note rn = Lists.newArrayList(class_notes).get(r.nextInt(class_notes.size()));
+			ObjectNode note = JsonNodeFactory.instance.objectNode()
+					.put("school", rn.getSchool())
+					.put("class", rn.getClassroom())
+					.put("group", rn.getAuthor())
+					.put("note_body", rn.getRandomBody());
+			grid.add(note);
+		}
+		return payload;
 	}
 
 	@Override
-	protected synchronized void generateUpdate() {
-		// TODO generate upadate for _full 
-		// TODO generate upadate for _grid
-		//eventGenerator.generateEvent("notes_update", JsonNodeFactory.instance.objectNode());
+	protected void generateUpdate() {
+//		Note rn = Lists.newArrayList(class_notes).get(r.nextInt(class_notes.size()));
+//		eh.generateEvent("notes_full_update", JsonNodeFactory.instance.objectNode().put("school", rn.getSchool())
+//				.put("class", rn.getClassroom())
+//				.put("group", rn.getAuthor())
+//				.put("note_body", rn.getBody()));
+//		
+//		rn = Lists.newArrayList(class_notes).get(r.nextInt(class_notes.size()));
+//		eh.generateEvent("notes_grid_update", JsonNodeFactory.instance.objectNode().put("school", rn.getSchool())
+//				.put("class", rn.getClassroom())
+//				.put("group", rn.getAuthor())
+//				.put("note_body", rn.getBody()));
 	}
 
 }

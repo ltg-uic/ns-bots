@@ -93,25 +93,25 @@ public class AmbientBot implements Observer {
 					eh.generateEvent(m.group(0).toString()+"_r", imageU.fullInit(e));
 					break;
 				case "images_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", imageU.fullInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", imageU.gridInit(e));
 					break;
 				case "score_full":
 					eh.generateEvent(m.group(0).toString()+"_r", scoreU.fullInit(e));
 					break;
 				case "score_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", scoreU.fullInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", scoreU.gridInit(e));
 					break;
 				case "#_notes_full":
 					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.fullInit(e));
 					break;
 				case "#_notes_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.fullInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.gridInit(e));
 					break;
 				case "notes_full":
 					eh.generateEvent(m.group(0).toString()+"_r", notesU.fullInit(e));
 					break;
 				case "notes_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", notesU.fullInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", notesU.gridInit(e));
 					break;
 				default:
 					throw new RuntimeException("Unknown init message!");

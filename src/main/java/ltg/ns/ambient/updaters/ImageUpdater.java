@@ -1,12 +1,14 @@
 package ltg.ns.ambient.updaters;
 
 import java.util.Observable;
-import java.util.Observer;
 
 import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ImageUpdater extends AbstractUpdater {
 
@@ -15,27 +17,49 @@ public class ImageUpdater extends AbstractUpdater {
 	}
 
 	@Override
-	public void update(Observable o, Object arg) {
+	public synchronized void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public JsonNode fullInit(LTGEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+	public synchronized JsonNode fullInit(LTGEvent e) {
+		ObjectNode payload = JsonNodeFactory.instance.objectNode()
+				.put("school", "ics")
+				.put("class", "ben")
+				.put("group", "cicciopasticcio");
+		ArrayNode burst = payload.putArray("burst");
+		burst.add("http://pikachu.badger.encorelab.org/1bfz298wrnk.jpg");
+		burst.add("http://pikachu.badger.encorelab.org/1jk3e5tut4w.jpg");
+		burst.add("http://pikachu.badger.encorelab.org/o7shv2i0ao.jpg");
+		return payload;
 	}
 
 	@Override
-	public JsonNode gridInit(LTGEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+	public synchronized JsonNode gridInit(LTGEvent e) {
+		ObjectNode payload = JsonNodeFactory.instance.objectNode();
+		ArrayNode grid = payload.putArray("grid"); 
+		for (int i=0; i<9; i++) {
+			ObjectNode node = JsonNodeFactory.instance.objectNode()
+					.put("school", "ics")
+					.put("class", "ben")
+					.put("group", "cicciopasticcio");
+			ArrayNode burst = node.putArray("burst");
+			burst.add("http://pikachu.badger.encorelab.org/1bfz298wrnk.jpg");
+			burst.add("http://pikachu.badger.encorelab.org/1jk3e5tut4w.jpg");
+			burst.add("http://pikachu.badger.encorelab.org/o7shv2i0ao.jpg");
+			grid.add(node);
+		}		
+		return payload;
 	}
 
 	@Override
 	public void generateUpdate() {
 		// TODO Auto-generated method stub
-		
+
 	}
+
+
+	
 
 }

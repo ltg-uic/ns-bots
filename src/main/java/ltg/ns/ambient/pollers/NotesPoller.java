@@ -47,11 +47,14 @@ public class NotesPoller extends Poller implements Runnable {
 	private Set<Note> parseNotes(Classrooms url, JsonNode get) {
 		Set<Note> notes = new HashSet<>();
 		for (JsonNode o: get)
+			if (o.get("published").asBoolean())
 			notes.add( new Note( o.get("_id").get("$oid").textValue(), 
 					url.getSchool(), 
 					url.getClassroom(),
 					o.get("author").textValue(),
-					o.get("body").textValue(), 
+					o.get("body").get("open")!=null ? o.get("body").get("open").textValue() : null, 
+					o.get("body").get("hypothesis")!=null ? o.get("body").get("hypothesis").textValue() : null,
+					o.get("body").get("question")!=null ? o.get("body").get("question").textValue() : null,
 					o.get("created_at").get("$date").textValue()));
 		return notes;
 	}
