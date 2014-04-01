@@ -35,8 +35,8 @@ public class AmbientBot implements Observer {
 	private boolean isDataValid = false;
 
 
-	public AmbientBot(String class_id) {
-		eh = new SingleChatLTGEventHandler("ns-bot-dev@ltg.evl.uic.edu", "ns-bot-dev", "nh-test@conference.ltg.evl.uic.edu");
+	public AmbientBot(String login, String class_id) {
+		eh = new SingleChatLTGEventHandler(login+"@ltg.evl.uic.edu", login, "nh-test@conference.ltg.evl.uic.edu");
 		wordleU = new WordleUpdater(eh);
 		imageU = new ImageUpdater(eh);
 		scoreU = new ScoreboardUpdater(eh);
@@ -47,12 +47,13 @@ public class AmbientBot implements Observer {
 
 	public static void main(String[] args) {
 		System.out.println("Started Neighborhood Safari Ambient Display bot");
-		if (args.length != 1 || 
-				args[0]==null || args[0].isEmpty()) {
-			System.out.println("Need to specify the classroom");
+		if (args.length != 2 || 
+				args[0]==null || args[0].isEmpty() ||
+				args[1]==null || args[1].isEmpty()) {
+			System.out.println("Need to specify the login name (e.g. ns-bot-#) and classroom (e.g. ben)");
 			System.exit(0);
 		}
-		AmbientBot ab = new AmbientBot(args[0]);
+		AmbientBot ab = new AmbientBot(args[0], args[1]);
 		ab.registerObservers();
 		ab.startPolling();
 		ab.registerListeners();
