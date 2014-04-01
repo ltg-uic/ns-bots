@@ -12,13 +12,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
 
 public class ScoreboardUpdater extends AbstractUpdater {
 	
-	private ImmutableMap<String, Integer> global_scoreboard;
-	private ImmutableList<ImmutableMap<String, Integer>> group_scoreboard;
+	private ImmutableListMultimap<String, Integer> global_scoreboard;
+	private ImmutableList<ImmutableListMultimap<String, Integer>> group_scoreboard;
 
 	public ScoreboardUpdater(SingleChatLTGEventHandler eg) {
 		super(eg);
@@ -27,7 +27,7 @@ public class ScoreboardUpdater extends AbstractUpdater {
 	@Override
 	public synchronized void update(Observable o, Object arg) {
 		global_scoreboard = buildGroupScoreboard();
-		List<ImmutableMap<String, Integer>> scores = Lists.newArrayList();
+		List<ImmutableListMultimap<String, Integer>> scores = Lists.newArrayList();
 		for (int i=0; i<9; i++)
 			scores.add(buildGroupScoreboard());
 		group_scoreboard = ImmutableList.copyOf(scores);
@@ -41,7 +41,11 @@ public class ScoreboardUpdater extends AbstractUpdater {
 				.put("class", "ben");
 		ArrayNode scoreboard = payload.putArray("tag_scoreboard");
 		for (String s: global_scoreboard.keySet()) {
-			scoreboard.add(JsonNodeFactory.instance.objectNode().put(s, global_scoreboard.get(s)));
+			ObjectNode line = JsonNodeFactory.instance.objectNode();
+			ArrayNode scores = line.putArray(s);
+			for (Integer i: global_scoreboard.get(s))
+				scores.add(i);
+			scoreboard.add(line);
 		}
 		return payload;
 	}
@@ -58,7 +62,11 @@ public class ScoreboardUpdater extends AbstractUpdater {
 					.put("group", "group-"+(i+1));
 			ArrayNode scoreboard = node.putArray("tag_scoreboard");
 			for (String s: group_scoreboard.get(i).keySet()) {
-				scoreboard.add(JsonNodeFactory.instance.objectNode().put(s, global_scoreboard.get(s)));
+				ObjectNode line = JsonNodeFactory.instance.objectNode();
+				ArrayNode scores = line.putArray(s);
+				for (Integer sc: global_scoreboard.get(s))
+					scores.add(sc);
+				scoreboard.add(line);
 			}
 			grid.add(node);
 		}		
@@ -72,9 +80,14 @@ public class ScoreboardUpdater extends AbstractUpdater {
 	}
 	
 	
-	static public ImmutableMap<String, Integer> buildGroupScoreboard() {
+	static public ImmutableListMultimap<String, Integer> buildGroupScoreboard() {
 		Random r = new Random();
-		return ImmutableMap.of("squirrel", r.nextInt(35), "raccoon", r.nextInt(6), "bird", r.nextInt(13), "deer", r.nextInt(2), "leves", r.nextInt(19));
+		return new ImmutableListMultimap.Builder<String, Integer>()
+				.putAll("squirrel", r.nextInt(15), r.nextInt(25), r.nextInt(35))
+				.putAll("raccoon", r.nextInt(6), r.nextInt(16), r.nextInt(26))
+				.putAll("bird", r.nextInt(13), r.nextInt(23), r.nextInt(33))
+				.putAll("deer", r.nextInt(2), r.nextInt(12), r.nextInt(22))
+				.build();
 	}
 
 }
