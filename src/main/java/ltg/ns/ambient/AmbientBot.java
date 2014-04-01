@@ -76,7 +76,7 @@ public class AmbientBot implements Observer {
 	
 	private void registerListeners() {
 		// Process init events
-		eh.registerHandler("\\w+_init", new SingleChatLTGEventListener() {
+		eh.registerHandler("(.+)_init", new SingleChatLTGEventListener() {
 			public void processEvent(LTGEvent e) {
 				// If there is no valid data coming from the pollers this request can't be satisfied
 				if (!isDataValid)

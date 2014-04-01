@@ -3,7 +3,6 @@ package ltg.ns.ambient.updaters;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Random;
-import java.util.Set;
 
 import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;

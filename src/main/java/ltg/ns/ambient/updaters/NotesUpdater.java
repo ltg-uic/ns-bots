@@ -47,7 +47,8 @@ public class NotesUpdater extends AbstractUpdater {
 	@Override
 	public synchronized JsonNode fullInit(LTGEvent e) {
 		Note rn = Lists.newArrayList(class_notes).get(r.nextInt(class_notes.size()));
-		return JsonNodeFactory.instance.objectNode().put("school", rn.getSchool())
+		return JsonNodeFactory.instance.objectNode()
+				.put("school", rn.getSchool())
 				.put("class", rn.getClassroom())
 				.put("group", rn.getAuthor())
 				.put("note_body", rn.getRandomBody());
