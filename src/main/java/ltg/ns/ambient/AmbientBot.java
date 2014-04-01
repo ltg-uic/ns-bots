@@ -36,7 +36,7 @@ public class AmbientBot implements Observer {
 
 
 	public AmbientBot(String class_id) {
-		eh = new SingleChatLTGEventHandler("ns-bot-1@ltg.evl.uic.edu", "ns-bot-1", "nh-test@conference.ltg.evl.uic.edu");
+		eh = new SingleChatLTGEventHandler("ns-bot-dev@ltg.evl.uic.edu", "ns-bot-dev", "nh-test@conference.ltg.evl.uic.edu");
 		wordleU = new WordleUpdater(eh);
 		imageU = new ImageUpdater(eh);
 		scoreU = new ScoreboardUpdater(eh);
@@ -114,7 +114,8 @@ public class AmbientBot implements Observer {
 					eh.generateEvent(m.group(0).toString()+"_r", notesU.gridInit(e));
 					break;
 				default:
-					throw new RuntimeException("Unknown init message!");
+					//throw new RuntimeException("Unknown init message!");
+					System.out.println("Unknown init event: " + e.getEventType());
 				}
 			}
 		});

@@ -10,7 +10,9 @@ import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.ns.ambient.model.Note;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -18,7 +20,7 @@ import com.google.common.collect.Maps;
 public class WordleUpdater extends AbstractUpdater {
 
 	private Map<String, String> wordles = Maps.newHashMap();
-	private ImmutableSet<Note> allNotes;
+	private ImmutableSet<Note> all_notes;
 	private Random r = new Random();
 
 	public WordleUpdater(SingleChatLTGEventHandler eg) {
@@ -27,30 +29,42 @@ public class WordleUpdater extends AbstractUpdater {
 
 	@Override
 	public synchronized void update(Observable o, Object arg) {
-		@SuppressWarnings("unchecked")
-		Set<Note> notes = (Set<Note>) arg;
-		allNotes = ImmutableSet.copyOf(notes);
-		for (Note n: notes) {
-			String wordleText = wordles.get(n.getAuthor());
+//		@SuppressWarnings("unchecked")
+//		Set<Note> notes = (Set<Note>) arg;
+//		all_notes = ImmutableSet.copyOf(notes);
+		all_notes = Note.generateStubNotesForIcsBenClassroom();
+		for (Note n: all_notes) {
+			String wordleText = wordles.get(n.getAuthor())==null ? "" : wordles.get(n.getAuthor());
 			wordleText += n.getRandomBody() + " ";
 			wordles.put(n.getAuthor(), wordleText);
 		}
-		generateUpdate();
+		//generateUpdate();
 	}
 
 	@Override
 	public synchronized JsonNode fullInit(LTGEvent e) {
-		Note rn = Lists.newArrayList(allNotes).get(r.nextInt(allNotes.size()));
-		return JsonNodeFactory.instance.objectNode().put("school", rn.getSchool())
-		.put("class", rn.getClassroom())
-		.put("group", rn.getAuthor())
-		.put("wordle_text", wordles.get(rn.getAuthor()));
+		Note rn = Lists.newArrayList(all_notes).get(r.nextInt(all_notes.size()));
+		return JsonNodeFactory.instance.objectNode()
+				.put("school", rn.getSchool())
+				.put("class", rn.getClassroom())
+				.put("group", rn.getAuthor())
+				.put("wordle_text", wordles.get(rn.getAuthor()));
 	}
 
 	@Override
 	public synchronized JsonNode gridInit(LTGEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+		ObjectNode payload = JsonNodeFactory.instance.objectNode();
+		ArrayNode grid = payload.putArray("grid"); 
+		for (int i=0; i<9; i++) {
+			Note rn = Lists.newArrayList(all_notes).get(r.nextInt(all_notes.size()));
+			ObjectNode note = JsonNodeFactory.instance.objectNode()
+					.put("school", rn.getSchool())
+					.put("class", rn.getClassroom())
+					.put("group", rn.getAuthor())
+					.put("wordle_text", wordles.get(rn.getAuthor()));
+			grid.add(note);
+		}
+		return payload;
 	}
 
 	@Override

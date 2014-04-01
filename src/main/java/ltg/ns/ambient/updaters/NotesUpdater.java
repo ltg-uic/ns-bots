@@ -3,7 +3,6 @@ package ltg.ns.ambient.updaters;
 import java.util.Collection;
 import java.util.Observable;
 import java.util.Random;
-import java.util.Set;
 
 import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
@@ -13,9 +12,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 public class NotesUpdater extends AbstractUpdater {
@@ -36,15 +32,16 @@ public class NotesUpdater extends AbstractUpdater {
 
 	@Override
 	public synchronized void update(Observable o, Object arg) {
-		@SuppressWarnings("unchecked")
-		Set<Note> notes = (Set<Note>) arg;
-		class_notes = Collections2.filter(ImmutableSet.copyOf(notes), new Predicate<Note>() {
-			@Override
-			public boolean apply(Note note) {
-				return note.getClassroom().equals(class_id);
-			}
-		});
-		generateUpdate();
+//		@SuppressWarnings("unchecked")
+//		Set<Note> notes = (Set<Note>) arg;
+//		class_notes = Collections2.filter(ImmutableSet.copyOf(notes), new Predicate<Note>() {
+//			@Override
+//			public boolean apply(Note note) {
+//				return note.getClassroom().equals(class_id);
+//			}
+//		});
+//		generateUpdate();
+		class_notes = Note.generateStubNotesForIcsBenClassroom();
 	}
 
 	@Override
