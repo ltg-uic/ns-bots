@@ -1,5 +1,7 @@
 package ltg.ns.ambient.model;
 
+import com.google.common.collect.ImmutableList;
+
 public class Burst {
 
 	private int id;
@@ -7,7 +9,7 @@ public class Burst {
 	private String classroom;
 	private String school;
 	private String created_at;
-	private String[] images;
+	private ImmutableList<String> images;
 
 	// private constructor to prevent creation without builder
 	private Burst(int id) {
@@ -51,10 +53,36 @@ public class Burst {
 		return this;
 	}
 	
+	public Burst images(ImmutableList<String> images) {
+		this.images = ImmutableList.copyOf(images);
+		return this;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public String getClassroom() {
+		return classroom;
+	}
+
+	public String getSchool() {
+		return school;
+	}
+
+	public String getCreated_at() {
+		return created_at;
+	}
+
+	public ImmutableList<String> getImages() {
+		return images;
+	}
 	
-//	public Burst images(String one, String two, String three) {
-//		return this;
-//	}
+	
 
 
 }

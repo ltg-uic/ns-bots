@@ -11,7 +11,7 @@ import ltg.ns.ambient.model.Note.Type;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableSet;
 
-public class NotesPoller extends Poller implements Runnable {
+public class NotesPoller extends AbstractPoller {
 
 	private ImmutableSet<Note> allNotes = ImmutableSet.of();
 
@@ -54,8 +54,8 @@ public class NotesPoller extends Poller implements Runnable {
 		Note n  = Note.buildNoteWithId(o.get("_id").get("$oid").textValue())
 				.school(url.getSchool())
 				.classroom(url.getClassroom())
-				.author("")
-				.createdAt("");
+				.author(o.get("author").textValue())
+				.createdAt(o.get("created_at").textValue());
 		// Parse type
 		Note.Type type = null;
 		switch (o.get("type").textValue()) {

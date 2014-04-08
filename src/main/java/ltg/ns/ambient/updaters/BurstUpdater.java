@@ -10,9 +10,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class ImageUpdater extends AbstractUpdater {
+public class BurstUpdater extends AbstractUpdater {
 
-	public ImageUpdater(SingleChatLTGEventHandler eg) {
+	public BurstUpdater(SingleChatLTGEventHandler eg) {
 		super(eg);
 	}
 
@@ -27,6 +27,7 @@ public class ImageUpdater extends AbstractUpdater {
 		ObjectNode payload = JsonNodeFactory.instance.objectNode()
 				.put("school", "ics")
 				.put("class", "ben")
+				.put("time", "") //burst
 				.put("group", "cicciopasticcio");
 		ArrayNode burst = payload.putArray("burst");
 		burst.add("http://pikachu.badger.encorelab.org/1bfz298wrnk.jpg");
@@ -43,6 +44,7 @@ public class ImageUpdater extends AbstractUpdater {
 			ObjectNode node = JsonNodeFactory.instance.objectNode()
 					.put("school", "ics")
 					.put("class", "ben")
+					.put("time", "") //burst
 					.put("group", "cicciopasticcio");
 			ArrayNode burst = node.putArray("burst");
 			burst.add("http://pikachu.badger.encorelab.org/1bfz298wrnk.jpg");

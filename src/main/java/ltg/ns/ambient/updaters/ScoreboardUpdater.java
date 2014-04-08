@@ -38,7 +38,8 @@ public class ScoreboardUpdater extends AbstractUpdater {
 	public synchronized JsonNode fullInit(LTGEvent e) {
 		ObjectNode payload = JsonNodeFactory.instance.objectNode()
 				.put("school", "ics")
-				.put("class", "ben");
+				.put("class", "ben")
+				.put("group", "");
 		ArrayNode scoreboard = payload.putArray("tag_scoreboard");
 		for (String s: global_scoreboard.keySet()) {
 			ObjectNode line = JsonNodeFactory.instance.objectNode();

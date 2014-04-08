@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.ImmutableSet;
 
-public class ImagesPoller extends Poller implements Runnable {
+public class BurstsPoller extends AbstractPoller implements Runnable {
 	
 	private ImmutableSet<Burst> allBursts = ImmutableSet.of();
 	private ImmutableSet<Deployment> allDeployments;

@@ -59,6 +59,7 @@ public class NotesNumberUpdater extends AbstractUpdater {
 		return JsonNodeFactory.instance.objectNode()
 				.put("school", rn.getSchool())
 				.put("class", rn.getClassroom())
+				.put("group", "")
 				.put("note_number", class_notes.size());
 	}
 
