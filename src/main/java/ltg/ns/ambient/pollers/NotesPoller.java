@@ -1,38 +1,34 @@
 package ltg.ns.ambient.pollers;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import ltg.commons.JSONHTTPClient;
 import ltg.ns.ambient.model.Classrooms;
 import ltg.ns.ambient.model.Note;
+import ltg.ns.ambient.model.Note.Type;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableSet;
 
-/**
- * Builds a wordle per group off of the notes they wrote.
- * Updates are simply the updated wordle. 
- */
 public class NotesPoller extends Poller implements Runnable {
 
-	private Set <Note> notes = Collections.synchronizedSet(new HashSet<Note>());
+	private ImmutableSet<Note> allNotes = ImmutableSet.of();
 
 
 	@Override
 	public void run() {
 		while (!Thread.interrupted()) {
-			Set<Note> notes = new HashSet<>();
-			// Fetch all notes
+			// Fetch all new notes
+			Set<Note> allNewNotes = new HashSet<>();
 			for (Classrooms url: Classrooms.values()) {
-				notes.addAll(parseNotes(url, JSONHTTPClient.GET(url.getNotesURL())));
+				allNewNotes.addAll(parseNotes(url, JSONHTTPClient.GET(url.getNotesURL())));
 			}
-			// Check if anything new happened, update notes and notify observers
-			if (!newAndOldNotesAreTheSame(notes)) {
-				updateNotes(notes);
+			if (!allNotes.containsAll(allNewNotes)) {
+				allNotes = ImmutableSet.copyOf(allNewNotes);
 				// Notify observers
 				this.setChanged();
-				this.notifyObservers(notes);
+				this.notifyObservers(allNotes);
 			}
 			// Sleep...
 			try {
@@ -44,30 +40,61 @@ public class NotesPoller extends Poller implements Runnable {
 	}
 
 
-	private Set<Note> parseNotes(Classrooms url, JsonNode get) {
+	private ImmutableSet<Note> parseNotes(Classrooms url, JsonNode get) {
 		Set<Note> notes = new HashSet<>();
 		for (JsonNode o: get)
 			if (o.get("published").asBoolean())
-			notes.add( new Note( o.get("_id").get("$oid").textValue(), 
-					url.getSchool(), 
-					url.getClassroom(),
-					o.get("author").textValue(),
-					o.get("body").get("open")!=null ? o.get("body").get("open").textValue() : null, 
-					o.get("body").get("hypothesis")!=null ? o.get("body").get("hypothesis").textValue() : null,
-					o.get("body").get("question")!=null ? o.get("body").get("question").textValue() : null,
-					o.get("created_at").get("$date").textValue()));
-		return notes;
+				notes.add(parseNote(url, o));
+		return ImmutableSet.copyOf(notes);
 	}
 
 
-	private boolean newAndOldNotesAreTheSame(Set<Note> new_notes) {
-		return notes.containsAll(new_notes);
+	private Note parseNote(Classrooms url, JsonNode o) {
+		// Parse content common to all notes
+		Note n  = Note.buildNoteWithId(o.get("_id").get("$oid").textValue())
+				.school(url.getSchool())
+				.classroom(url.getClassroom())
+				.author("")
+				.createdAt("");
+		// Parse type
+		Note.Type type = null;
+		switch (o.get("type").textValue()) {
+		case "planning":
+			type = Type.planning;
+			break;
+		case "photo_set":
+			type = Type.photo_set;
+			break;
+		case "open":
+			type = Type.open;
+			break;
+		case "cross_cutting":
+			type = Type.cross_cutting;
+			break;
+		}
+		// Parse body based on type
+		String b_title = o.get("body").get("title")!=null ? o.get("body").get("title").textValue() : null;
+		String b_description = o.get("body").get("question")!=null ? o.get("body").get("question").textValue() : null;
+		String b_question = o.get("body").get("hypothesis")!=null ? o.get("body").get("hypothesis").textValue() : null;
+		String b_hypothesis = o.get("body").get("explanation")!=null ? o.get("body").get("explanation").textValue() : null;
+		String b_explanation = o.get("body").get("description")!=null ? o.get("body").get("description").textValue() : null;
+		String b_evidence = o.get("body").get("evidence")!=null ? o.get("body").get("evidence").textValue() : null;
+		switch (type) {
+		case cross_cutting:
+			n.withCrussCuttingBody(b_title, b_description, b_explanation);
+			break;
+		case open:
+			n.withOpenBody(b_title, b_description);
+			break;
+		case photo_set:
+			n.withPhotoSetBody(b_title, b_description, b_question, b_explanation);
+			break;
+		case planning:
+			n.withPlanningBody(b_title, b_description, b_hypothesis, b_explanation, b_evidence);
+			break;
+		default:
+			new RuntimeException("Unknown note type");
+		}
+		return n;
 	}
-
-
-	private void updateNotes(Set<Note> new_notes) {
-		notes.addAll(new_notes);
-	}
-
-
 }

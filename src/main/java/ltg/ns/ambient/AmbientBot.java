@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventListener;
-import ltg.ns.ambient.pollers.ImagePoller;
+import ltg.ns.ambient.pollers.ImagesPoller;
 import ltg.ns.ambient.pollers.NotesPoller;
 import ltg.ns.ambient.updaters.ImageUpdater;
 import ltg.ns.ambient.updaters.NotesNumberUpdater;
@@ -22,7 +22,7 @@ public class AmbientBot implements Observer {
 	private SingleChatLTGEventHandler eh;
 	// Pollers
 	private NotesPoller np = new NotesPoller();
-	private ImagePoller ip = new ImagePoller();
+	private ImagesPoller ip = new ImagesPoller();
 	// Updaters
 	private UpdaterInterface wordleU;
 	private UpdaterInterface imageU; 
@@ -53,10 +53,16 @@ public class AmbientBot implements Observer {
 			System.out.println("Need to specify the login name (e.g. ns-bot-#) and classroom (e.g. ben)");
 			System.exit(0);
 		}
-		AmbientBot ab = new AmbientBot(args[0], args[1]);
-		ab.registerObservers();
-		ab.startPolling();
-		ab.registerListeners();
+		try {
+			AmbientBot ab = new AmbientBot(args[0], args[1]);
+			ab.registerObservers();
+			ab.startPolling();
+			ab.registerListeners();
+		} catch (Exception e) {
+			// Catch the exception, write it out and move on
+			e.printStackTrace();
+		}
+		
 	}
 
 	private void registerObservers() {
@@ -76,6 +82,7 @@ public class AmbientBot implements Observer {
 	
 	private void registerListeners() {
 		// Process init events
+		/*
 		eh.registerHandler("(.+)_init", new SingleChatLTGEventListener() {
 			public void processEvent(LTGEvent e) {
 				// If there is no valid data coming from the pollers this request can't be satisfied
@@ -120,6 +127,7 @@ public class AmbientBot implements Observer {
 				}
 			}
 		});
+		*/
 		eh.runSynchronously();
 	}
 
@@ -127,7 +135,7 @@ public class AmbientBot implements Observer {
 	public void update(Observable o, Object arg) {
 		if (o instanceof NotesPoller)
 			isNotesPollerAlive = true;
-		if (o instanceof ImagePoller)
+		if (o instanceof ImagesPoller)
 			isImagesPollerAlive = true;
 		if (isImagesPollerAlive && isNotesPollerAlive) {
 			np.deleteObserver(this);
