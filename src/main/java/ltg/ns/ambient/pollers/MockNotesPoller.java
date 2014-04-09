@@ -30,7 +30,6 @@ public class MockNotesPoller extends AbstractPoller {
 				// Notify observers
 				this.setChanged();
 				this.notifyObservers(allNotes);
-				System.out.println("Added a note");
 			}
 			// Sleep...
 			try {

@@ -79,6 +79,11 @@ public class Note {
 	public boolean equals(Object obj) {
 		return id.equals(((Note)obj).getId());
 	}
+	
+	@Override
+	public String toString() {
+		return id;
+	}
 
 	public static Note buildNoteWithId(String id) {
 		return new Note(id);

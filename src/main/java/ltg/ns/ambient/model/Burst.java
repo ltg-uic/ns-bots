@@ -23,8 +23,7 @@ public class Burst {
 	
 	@Override
 	public String toString() {
-		// TODO
-		return super.toString();
+		return Integer.toString(id);
 	}
 
 	

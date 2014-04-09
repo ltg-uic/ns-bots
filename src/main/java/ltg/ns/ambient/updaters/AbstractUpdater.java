@@ -11,6 +11,4 @@ public abstract class AbstractUpdater implements UpdaterInterface {
 		this.eh = eh;
 		this.classId = classId;
 	}
-	
-	protected abstract void generateUpdate();
 }

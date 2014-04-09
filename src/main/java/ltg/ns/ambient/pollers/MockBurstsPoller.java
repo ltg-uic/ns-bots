@@ -27,11 +27,10 @@ public class MockBurstsPoller extends AbstractPoller implements Runnable {
 					.add(RandomBurstBuilder.buildBurst())
 					.build();
 			if (!allBursts.containsAll(allNewBursts)) {
-				allBursts = ImmutableSet.copyOf(allNewBursts);
+				allBursts = allNewBursts;
 				// Notify observers
 				this.setChanged();
-				this.notifyObservers(allBursts);
-				System.out.println("Added a burst");
+				this.notifyObservers(allNewBursts);
 			}
 			// Sleep...
 			try {

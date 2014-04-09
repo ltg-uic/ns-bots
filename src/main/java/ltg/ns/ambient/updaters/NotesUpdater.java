@@ -66,7 +66,7 @@ public class NotesUpdater extends AbstractNoteUpdater {
 		 * 	 refresh cycle
 		 */
 		Note rn = Lists.newArrayList(notes).get(new Random().nextInt(notes.size()));
-		eh.generateEvent("notes_full_update", JsonNodeFactory.instance.objectNode()
+		eh.generateEvent("notes_update", JsonNodeFactory.instance.objectNode()
 				.put("school", rn.getSchool())
 				.put("class", rn.getClassroom())
 				.put("group", rn.getAuthor())
