@@ -35,7 +35,7 @@ public class MockBurstsPoller extends AbstractPoller implements Runnable {
 			}
 			// Sleep...
 			try {
-				Thread.sleep(POLL_INTERVAL/4);
+				Thread.sleep(30_000);
 			} catch (InterruptedException e) {
 				return;
 			}

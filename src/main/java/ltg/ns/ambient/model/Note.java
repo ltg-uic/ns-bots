@@ -2,6 +2,7 @@ package ltg.ns.ambient.model;
 
 
 
+
 public class Note {
 
 	public enum Type {
@@ -13,6 +14,7 @@ public class Note {
 	private String classroom;
 	private String school; 
 	private Type type;
+	// TODO fix body and note type
 	private String body_title;
 	private String body_description;
 	private String body_question;
@@ -76,22 +78,6 @@ public class Note {
 	@Override
 	public boolean equals(Object obj) {
 		return id.equals(((Note)obj).getId());
-	}
-
-
-	@Override
-	public String toString() {	
-		return getRandomBody();
-	}
-
-	public String getRandomBody() {
-		if (body_evidence!=null)
-			return body_evidence;
-		if (body_hypothesis!=null)
-			return body_hypothesis;
-		if (body_question!=null)
-			return body_question;
-		throw new RuntimeException("This note has no body... like... WAT!");
 	}
 
 	public static Note buildNoteWithId(String id) {

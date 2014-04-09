@@ -23,6 +23,8 @@ import ltg.ns.ambient.updaters.WordleUpdater;
 public class AmbientBot implements Observer {
 	// XMPP event handler
 	private SingleChatLTGEventHandler eh;
+	// Class id
+	private String classId;
 	// Pollers
 	private AbstractPoller np = new MockNotesPoller();
 	private AbstractPoller ip = new MockBurstsPoller();
@@ -40,9 +42,10 @@ public class AmbientBot implements Observer {
 
 	public AmbientBot(String login, String class_id) {
 		eh = new SingleChatLTGEventHandler(login+"@ltg.evl.uic.edu", login, "nh-test@conference.ltg.evl.uic.edu");
-		wordleU = new WordleUpdater(eh);
-		imageU = new BurstUpdater(eh);
-		scoreU = new ScoreboardUpdater(eh);
+		classId = class_id;
+		wordleU = new WordleUpdater(eh, class_id);
+		imageU = new BurstUpdater(eh, class_id);
+		scoreU = new ScoreboardUpdater(eh, class_id);
 		notesNumberU = new NotesNumberUpdater(eh, class_id);
 		notesU = new NotesUpdater(eh, class_id);
 	}
@@ -71,11 +74,11 @@ public class AmbientBot implements Observer {
 	private void registerObservers() {
 		np.addObserver(this);
 		ip.addObserver(this);
-		np.addObserver(wordleU);
-		ip.addObserver(imageU);
-		np.addObserver(scoreU);
-		np.addObserver(notesNumberU);
-		np.addObserver(notesU);	
+		np.addObserver(notesU);
+		//np.addObserver(notesNumberU);
+		//np.addObserver(scoreU);
+		//ip.addObserver(imageU);
+		//np.addObserver(wordleU);
 	}
 
 	private void startPolling() {
@@ -87,41 +90,45 @@ public class AmbientBot implements Observer {
 		// Process init events
 		eh.registerHandler("(.+)_init", new SingleChatLTGEventListener() {
 			public void processEvent(LTGEvent e) {
-				// If there is no valid data coming from the pollers this request can't be satisfied
+				// If there is no valid data coming from the pollers, ditch the request
 				if (!isDataValid)
+					return;
+				// If classroom is not the one specified when starting the bot, this is not the right 
+				// bot for this request so discard
+				if (!e.getPayload().get("class").textValue().equals(classId))
 					return;
 				Matcher m = Pattern.compile("(.+)_init").matcher(e.getEventType());
 				m.matches();
 				switch (m.group(1)) {
 				case "notes_full":
-					eh.generateEvent(m.group(0).toString()+"_r", notesU.fullInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", notesU.fullInit());
 					break;
 				case "notes_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", notesU.gridInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", notesU.gridInit());
 					break;
 				case "#_notes_full":
-					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.fullInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.fullInit());
 					break;
 				case "#_notes_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.gridInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.gridInit());
 					break;
 				case "score_full":
-					eh.generateEvent(m.group(0).toString()+"_r", scoreU.fullInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", scoreU.fullInit());
 					break;
 				case "score_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", scoreU.gridInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", scoreU.gridInit());
 					break;
 				case "images_full":
-					eh.generateEvent(m.group(0).toString()+"_r", imageU.fullInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", imageU.fullInit());
 					break;
 				case "images_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", imageU.gridInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", imageU.gridInit());
 					break;
 				case "wordle_full":
-					eh.generateEvent(m.group(0).toString()+"_r", wordleU.fullInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", wordleU.fullInit());
 					break;
 				case "wordle_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", wordleU.gridInit(e));
+					eh.generateEvent(m.group(0).toString()+"_r", wordleU.gridInit());
 					break;
 				default:
 					//throw new RuntimeException("Unknown init message!");

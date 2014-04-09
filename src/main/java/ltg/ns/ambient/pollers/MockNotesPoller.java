@@ -34,7 +34,7 @@ public class MockNotesPoller extends AbstractPoller {
 			}
 			// Sleep...
 			try {
-				Thread.sleep(POLL_INTERVAL/5);
+				Thread.sleep(20_000);
 			} catch (InterruptedException e) {
 				return;
 			}

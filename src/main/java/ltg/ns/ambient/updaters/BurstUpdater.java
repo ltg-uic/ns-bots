@@ -2,7 +2,6 @@ package ltg.ns.ambient.updaters;
 
 import java.util.Observable;
 
-import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,8 +11,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class BurstUpdater extends AbstractUpdater {
 
-	public BurstUpdater(SingleChatLTGEventHandler eg) {
-		super(eg);
+	public BurstUpdater(SingleChatLTGEventHandler eh, String classId) {
+		super(eh, classId);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class BurstUpdater extends AbstractUpdater {
 	}
 
 	@Override
-	public synchronized JsonNode fullInit(LTGEvent e) {
+	public synchronized JsonNode fullInit() {
 		ObjectNode payload = JsonNodeFactory.instance.objectNode()
 				.put("school", "ics")
 				.put("class", "ben")
@@ -37,7 +37,7 @@ public class BurstUpdater extends AbstractUpdater {
 	}
 
 	@Override
-	public synchronized JsonNode gridInit(LTGEvent e) {
+	public synchronized JsonNode gridInit() {
 		ObjectNode payload = JsonNodeFactory.instance.objectNode();
 		ArrayNode grid = payload.putArray("grid"); 
 		for (int i=0; i<9; i++) {
