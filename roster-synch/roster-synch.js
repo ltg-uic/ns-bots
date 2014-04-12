@@ -4,7 +4,7 @@ var sql_roster, mongo_roster = null;
 var X_Trap_Token = "zCMbeLuh8XHpfbvaGfwnZmBKOvgVrTfL";
 
 // Get Mongo roster
-function getMongoRoster(callback) {
+function getMongoRoster() {
 	var data = '';
 	http.get("http://drowsy.badger.encorelab.org/rollcall/groups", function(res) {
 		res.on('data', function(chunk) {
@@ -19,21 +19,38 @@ function getMongoRoster(callback) {
 }
 
 // Get SQL roster
-function initSQLRoster(callback) {
+function initSQLRosterAndStart(poll, time) {
 	var data = '';
 	http.get("http://trap.euclidsoftware.com/person", function(res) {
 		res.on('data', function(chunk) {
 			data += chunk;
 		}).on('end', function() {
-			console.log("SQL roster initialized")
+			console.log("Roster sync bot started...")
 			sql_roster = JSON.parse(data).person;
-			//setInterval(getMongoRoster, 5000);
-			getMongoRoster();
+			if (poll)
+				setInterval(getMongoRoster, time);
+			else
+				getMongoRoster();
 		});
 	}).on('error', function(e) {
 		console.log("Got error from SQL: " + e.message);
 	});
 }
+
+// Get SQL roster
+function getSQLRoster() {
+	var data = '';
+	http.get("http://trap.euclidsoftware.com/person", function(res) {
+		res.on('data', function(chunk) {
+			data += chunk;
+		}).on('end', function() {
+			sql_roster = JSON.parse(data).person;
+		});
+	}).on('error', function(e) {
+		console.log("Got error from SQL: " + e.message);
+	});
+}
+
 
 // Associates the class name to the right class id
 function getClassId(classname) {
@@ -97,20 +114,36 @@ function putPerson(id, name, classroom) {
 }
 
 
-
-
-// What is only in mongo and not in SQL? To find out do MONGO - SQL
+// What wich users are only in mongo and not in SQL? To find out do MONGO - SQL (mongo always has more elements than sql)
 function compareDBs() {
-
+	return mongo_roster.filter(function(el) {
+		// if the function returns true, the element is added
+		// I need to add stuff that is only in mongo and not in sql
+		// So if I find it in sql I should NOT add it
+		// If I don't find it in SQL I shoud add it
+		var verdict = true;
+		var i = 0;
+		while (i<sql_roster.length) {
+			if (sql_roster[i].first_name==el.groupname &&  sql_roster[i].class_id==getClassId(el.tags[0])) {
+				verdict = false;
+				break;
+			}
+			i++;
+		}
+		return verdict;
+	});
 }
 
 function synchRoster() {
 	var diff = compareDBs();
-	// write diff
+	diff.forEach(function(group) {
+		addPersonToSQL(group.groupname, group.tags[0]);
+	});
+	getSQLRoster();
 }
 
 
-// Printing stuff just for fun
+// Prints both rosters, used for debugging
 function printRosters() {
 	console.log("SQL:")
 	sql_roster.forEach(function(user) {
@@ -126,4 +159,4 @@ function printRosters() {
 ///////////  
 // Start //  
 /////////// 
-initSQLRoster();
+initSQLRosterAndStart(false);
