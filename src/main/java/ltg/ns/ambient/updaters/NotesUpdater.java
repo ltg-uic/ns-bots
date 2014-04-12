@@ -2,6 +2,7 @@ package ltg.ns.ambient.updaters;
 
 import java.util.Random;
 
+import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.ns.ambient.model.Note;
 
@@ -22,7 +23,7 @@ public class NotesUpdater extends AbstractNoteUpdater {
 	 * Returns the latest note posted either by the class or all the classes
 	 */
 	@Override
-	public synchronized JsonNode fullInit() {
+	public synchronized JsonNode fullInit(LTGEvent e) {
 		// TODO this is not random... We need to sort the notes in chronological order and select the most recent
 		Note rn = Lists.newArrayList(notes).get(new Random().nextInt(notes.size()));
 		return JsonNodeFactory.instance.objectNode()
@@ -36,7 +37,7 @@ public class NotesUpdater extends AbstractNoteUpdater {
 	 * Return the latest note posted by each one of the groups either in the class or all the classes
 	 */
 	@Override
-	public synchronized JsonNode gridInit() {
+	public synchronized JsonNode gridInit(LTGEvent e) {
 		ObjectNode payload = JsonNodeFactory.instance.objectNode();
 		ArrayNode grid = payload.putArray("grid"); 
 		for (int i=0; i<9; i++) {

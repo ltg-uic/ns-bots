@@ -9,14 +9,12 @@ import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventListener;
 import ltg.ns.ambient.pollers.AbstractPoller;
-import ltg.ns.ambient.pollers.BurstsPoller;
 import ltg.ns.ambient.pollers.MockBurstsPoller;
 import ltg.ns.ambient.pollers.MockNotesPoller;
-import ltg.ns.ambient.pollers.NotesPoller;
 import ltg.ns.ambient.updaters.BurstUpdater;
 import ltg.ns.ambient.updaters.NotesNumberUpdater;
 import ltg.ns.ambient.updaters.NotesUpdater;
-import ltg.ns.ambient.updaters.ScoreboardUpdater;
+import ltg.ns.ambient.updaters.TagsScoreboardUpdater;
 import ltg.ns.ambient.updaters.UpdaterInterface;
 import ltg.ns.ambient.updaters.WordleUpdater;
 
@@ -28,6 +26,7 @@ public class AmbientBot implements Observer {
 	// Pollers
 	private AbstractPoller np = new MockNotesPoller();
 	private AbstractPoller ip = new MockBurstsPoller();
+	//private AbstractPoller tp = new TagPoller();
 	// Updaters
 	private UpdaterInterface wordleU;
 	private UpdaterInterface imageU; 
@@ -45,7 +44,7 @@ public class AmbientBot implements Observer {
 		classId = class_id;
 		wordleU = new WordleUpdater(eh, class_id);
 		imageU = new BurstUpdater(eh, class_id);
-		scoreU = new ScoreboardUpdater(eh, class_id);
+		scoreU = new TagsScoreboardUpdater(eh, class_id);
 		notesNumberU = new NotesNumberUpdater(eh, class_id);
 		notesU = new NotesUpdater(eh, class_id);
 	}
@@ -68,24 +67,24 @@ public class AmbientBot implements Observer {
 			// Catch the exception, write it out and move on
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void registerObservers() {
 		np.addObserver(this);
 		ip.addObserver(this);
 		np.addObserver(notesU);
-		//np.addObserver(notesNumberU);
-		//np.addObserver(scoreU);
+		np.addObserver(notesNumberU);
+		np.addObserver(scoreU);
 		ip.addObserver(imageU);
-		//np.addObserver(wordleU);
+		np.addObserver(wordleU);
 	}
 
 	private void startPolling() {
 		new Thread(np).start();
 		new Thread(ip).start();
 	}
-	
+
 	private void registerListeners() {
 		// Process init events
 		eh.registerHandler("(.+)_init", new SingleChatLTGEventListener() {
@@ -101,34 +100,34 @@ public class AmbientBot implements Observer {
 				m.matches();
 				switch (m.group(1)) {
 				case "notes_full":
-					eh.generateEvent(m.group(0).toString()+"_r", notesU.fullInit());
+					eh.generateEvent(m.group(0).toString()+"_r", notesU.fullInit(e));
 					break;
 				case "notes_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", notesU.gridInit());
+					eh.generateEvent(m.group(0).toString()+"_r", notesU.gridInit(e));
 					break;
 				case "#_notes_full":
-					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.fullInit());
+					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.fullInit(e));
 					break;
 				case "#_notes_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.gridInit());
+					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.gridInit(e));
 					break;
 				case "score_full":
-					eh.generateEvent(m.group(0).toString()+"_r", scoreU.fullInit());
+					eh.generateEvent(m.group(0).toString()+"_r", scoreU.fullInit(e));
 					break;
 				case "score_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", scoreU.gridInit());
+					eh.generateEvent(m.group(0).toString()+"_r", scoreU.gridInit(e));
 					break;
 				case "images_full":
-					eh.generateEvent(m.group(0).toString()+"_r", imageU.fullInit());
+					eh.generateEvent(m.group(0).toString()+"_r", imageU.fullInit(e));
 					break;
 				case "images_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", imageU.gridInit());
+					eh.generateEvent(m.group(0).toString()+"_r", imageU.gridInit(e));
 					break;
 				case "wordle_full":
-					eh.generateEvent(m.group(0).toString()+"_r", wordleU.fullInit());
+					eh.generateEvent(m.group(0).toString()+"_r", wordleU.fullInit(e));
 					break;
 				case "wordle_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", wordleU.gridInit());
+					eh.generateEvent(m.group(0).toString()+"_r", wordleU.gridInit(e));
 					break;
 				default:
 					//throw new RuntimeException("Unknown init message!");
@@ -136,19 +135,45 @@ public class AmbientBot implements Observer {
 				}
 			}
 		});
+		eh.registerHandler("displays_init", new SingleChatLTGEventListener() {	
+			@Override
+			public void processEvent(LTGEvent e) {
+				// If there is no valid data coming from the pollers, ditch the request
+				if (!isDataValid)
+					return;
+				// If classroom is not the one specified when starting the bot, 
+				// this is not the right bot for this request, discard
+				if (!e.getPayload().get("class").textValue().equals(classId))
+					return;
+				Matcher m = Pattern.compile("(.+)_init").matcher(e.getEventType());
+				m.matches();
+				eh.generateEvent("notes_full_init_r", notesU.fullInit(e));
+				eh.generateEvent("notes_grid_init_r", notesU.gridInit(e));
+				eh.generateEvent("#_notes_full_init_r", notesNumberU.fullInit(e));
+				eh.generateEvent("#_notes_grid_init_r", notesNumberU.gridInit(e));
+				eh.generateEvent("score_full_init_r", scoreU.fullInit(e));
+				eh.generateEvent("score_grid_init_r", scoreU.gridInit(e));
+				eh.generateEvent("images_full_init_r", imageU.fullInit(e));
+				eh.generateEvent("images_grid_init_r", imageU.gridInit(e));
+				eh.generateEvent("wordle_full_init_r", wordleU.fullInit(e));
+				eh.generateEvent("wordle_grid_init_r", wordleU.gridInit(e));
+			}
+		});
+
 		eh.runSynchronously();
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof NotesPoller)
+		if (o instanceof MockNotesPoller)
 			isNotesPollerAlive = true;
-		if (o instanceof BurstsPoller)
+		if (o instanceof MockBurstsPoller)    // TODO change this into simple poller and ad tags!!!!!
 			isImagesPollerAlive = true;
 		if (isImagesPollerAlive && isNotesPollerAlive) {
 			np.deleteObserver(this);
 			ip.deleteObserver(this);
 			isDataValid = true;
+			System.out.println("Listning for events");
 		}
 	}
 

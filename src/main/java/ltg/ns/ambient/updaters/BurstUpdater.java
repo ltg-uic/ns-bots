@@ -5,6 +5,7 @@ import java.util.Observable;
 import java.util.Random;
 import java.util.Set;
 
+import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.ns.ambient.model.Burst;
 
@@ -67,7 +68,7 @@ public class BurstUpdater extends AbstractUpdater {
 	 * Returns a random burst among the ones that have been posted so far
 	 */
 	@Override
-	public synchronized JsonNode fullInit() {
+	public synchronized JsonNode fullInit(LTGEvent e) {
 		Burst b = Lists.newArrayList(bursts).get(new Random().nextInt(bursts.size()));
 		ObjectNode node = JsonNodeFactory.instance.objectNode()
 				.put("school", b.getSchool())
@@ -85,7 +86,7 @@ public class BurstUpdater extends AbstractUpdater {
 	 * Returns a random burst per each group in the classroom/all classrooms
 	 */
 	@Override
-	public synchronized JsonNode gridInit() {
+	public synchronized JsonNode gridInit(LTGEvent e) {
 		// TODO we actually need to add the single groups and not 9 random bursts
 		ObjectNode payload = JsonNodeFactory.instance.objectNode();
 		ArrayNode grid = payload.putArray("grid"); 

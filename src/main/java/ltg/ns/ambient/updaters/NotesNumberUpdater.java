@@ -1,10 +1,8 @@
 package ltg.ns.ambient.updaters;
 
-import java.util.Collection;
-import java.util.Random;
-
+import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
-import ltg.ns.ambient.model.Note;
+import ltg.ns.ambient.model.Classrooms;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -12,51 +10,54 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 
 public class NotesNumberUpdater extends AbstractNoteUpdater {
 	
-		private String class_id;
-	private Collection<Note> class_notes;
-	private Random r = new Random();
 	private ImmutableMap<String, Integer> group_notes_counts;
 
-	
 	public NotesNumberUpdater(SingleChatLTGEventHandler eh, String classId) {
 		super(eh, classId);
 	}
 
 
+	/**
+	 * Displays the overall amount of notes posted by this/all classes since the beginning of the unit
+	 * OR is it the notes for a random group? not interesting...
+	 * TODO define the semantics of each of the channels
+	 */
 	@Override
-	// Displays the overall amount of notes posted for this class
-	public synchronized JsonNode fullInit() {
-		Note rn = Lists.newArrayList(class_notes).get(r.nextInt(class_notes.size()));
+	public synchronized JsonNode fullInit(LTGEvent e) {
 		return JsonNodeFactory.instance.objectNode()
-				.put("school", rn.getSchool())
-				.put("class", rn.getClassroom())
-				.put("group", "")
-				.put("note_number", class_notes.size());
+				.put("school", Classrooms.getSchooForClass(classId))
+				.put("class", classId)
+				.put("#_note", notes.size());
 	}
 
 
+	/**
+	 * Displays the overall amount of notes posted by all the groups in this/all classes since the beginning of the unit
+	 * TODO need to put groups in there! 
+	 */
 	@Override
-	// Displays the overall amount of notes posted by 9 groups in this class
-	public synchronized JsonNode gridInit() {
+	public synchronized JsonNode gridInit(LTGEvent e) {
 		ObjectNode payload = JsonNodeFactory.instance.objectNode();
 		ArrayNode grid = payload.putArray("grid");
 		ImmutableList<String> keys = ImmutableList.copyOf(group_notes_counts.keySet());
 		for (int i=0; i<9; i++) {
 			ObjectNode note = JsonNodeFactory.instance.objectNode()
 					.put("school", "ics")
-					.put("class", class_id)
+					.put("class", classId)
 					.put("group", keys.get(i))
-					.put("note_number", group_notes_counts.get(keys.get(i)));
+					.put("#_note", group_notes_counts.get(keys.get(i)));
 			grid.add(note);
 		}
 		return payload;
 	}
 
-
+	/**
+	 * Just send the updated counts for a random group 
+	 * AND the whole class
+	 */
 	@Override
 	protected void generateUpdate() {
 		eh.generateEvent("#_notes_update", JsonNodeFactory.instance.objectNode());

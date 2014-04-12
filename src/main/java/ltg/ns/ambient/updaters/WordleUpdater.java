@@ -3,6 +3,7 @@ package ltg.ns.ambient.updaters;
 import java.util.Map;
 import java.util.Random;
 
+import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.ns.ambient.model.Note;
 
@@ -26,7 +27,7 @@ public class WordleUpdater extends AbstractNoteUpdater {
 	}
 	
 	@Override
-	public synchronized JsonNode fullInit() {
+	public synchronized JsonNode fullInit(LTGEvent e) {
 		Note rn = Lists.newArrayList(all_notes).get(r.nextInt(all_notes.size()));
 		return JsonNodeFactory.instance.objectNode()
 				.put("school", rn.getSchool())
@@ -36,7 +37,7 @@ public class WordleUpdater extends AbstractNoteUpdater {
 	}
 
 	@Override
-	public synchronized JsonNode gridInit() {
+	public synchronized JsonNode gridInit(LTGEvent e) {
 		ObjectNode payload = JsonNodeFactory.instance.objectNode();
 		ArrayNode grid = payload.putArray("grid"); 
 		for (int i=0; i<9; i++) {

@@ -2,6 +2,7 @@ package ltg.ns.ambient.updaters;
 
 import java.util.Random;
 
+import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,19 +12,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 
-public class ScoreboardUpdater extends AbstractNoteUpdater {
+public class TagsScoreboardUpdater extends AbstractNoteUpdater {
 	
 		private ImmutableListMultimap<String, Integer> global_scoreboard;
 	private ImmutableList<ImmutableListMultimap<String, Integer>> group_scoreboard;
 	
 	
-	public ScoreboardUpdater(SingleChatLTGEventHandler eh, String classId) {
+	public TagsScoreboardUpdater(SingleChatLTGEventHandler eh, String classId) {
 		super(eh, classId);
 	}
 
 	@Override
 	// Returns the tags scoreboard for all the classes
-	public synchronized JsonNode fullInit() {
+	public synchronized JsonNode fullInit(LTGEvent e) {
 		ObjectNode payload = JsonNodeFactory.instance.objectNode()
 				.put("school", "ics")
 				.put("class", "ben")
@@ -41,7 +42,7 @@ public class ScoreboardUpdater extends AbstractNoteUpdater {
 
 	@Override
 	// Returns 9 scoreboards of 9 groups among all the groups in the run
-	public synchronized JsonNode gridInit() {
+	public synchronized JsonNode gridInit(LTGEvent e) {
 		ObjectNode payload = JsonNodeFactory.instance.objectNode();
 		ArrayNode grid = payload.putArray("grid"); 
 		for (int i=0; i<9; i++) {

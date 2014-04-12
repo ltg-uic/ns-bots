@@ -1,5 +1,6 @@
 package ltg.ns.ambient.model;
 
+
 public enum Classrooms {
 	BEN("ics", "ben", "http://drowsy.badger.encorelab.org/safari-ben/notes"),
 	AMANDA("ics", "amanda", "http://drowsy.badger.encorelab.org/safari-amanda/notes"),
@@ -28,6 +29,16 @@ public enum Classrooms {
 	
 	public String getNotesURL() {
 		return notes_url;
+	}
+	
+	public static String getSchooForClass(String clazzroom) {
+		String school = "all";
+		for(Classrooms t: Classrooms.values())
+			if (t.classroom.equals(clazzroom)) {
+				school = t.school;
+				break;
+			}
+		return school;
 	}
 	 
 }
