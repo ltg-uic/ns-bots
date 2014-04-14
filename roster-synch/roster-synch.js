@@ -70,6 +70,9 @@ function getClassId(classname) {
 		case "7DM":
 			return 13;
 			break;
+		case "test":
+			return 15;
+			break;
 	}
 }
 
@@ -124,7 +127,7 @@ function compareDBs() {
 		var verdict = true;
 		var i = 0;
 		while (i<sql_roster.length) {
-			if (sql_roster[i].first_name==el.groupname &&  sql_roster[i].class_id==getClassId(el.tags[0])) {
+			if (sql_roster[i].first_name==el.groupname &&  sql_roster[i].class_id==getClassId(el.runs[0])) {
 				verdict = false;
 				break;
 			}
@@ -137,7 +140,7 @@ function compareDBs() {
 function synchRoster() {
 	var diff = compareDBs();
 	diff.forEach(function(group) {
-		addPersonToSQL(group.groupname, group.tags[0]);
+		addPersonToSQL(group.groupname, group.runs[0]);
 	});
 	getSQLRoster();
 }
@@ -156,7 +159,7 @@ function printRosters() {
 }
 
 
-///////////  
-// Start //  
-/////////// 
+///////////
+// Start //
+///////////
 initSQLRosterAndStart(false);
