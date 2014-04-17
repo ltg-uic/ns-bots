@@ -1,7 +1,7 @@
 var http = require("http");
 
 var sql_roster, mongo_roster = null;
-var X_Trap_Token = "zCMbeLuh8XHpfbvaGfwnZmBKOvgVrTfL";
+var X_Trap_Token = "WouldntItBeCool16";
 
 // Get Mongo roster
 function getMongoRoster() {
@@ -71,7 +71,7 @@ function getClassId(classname) {
 			return 13;
 			break;
 		case "test":
-			return 15;
+			return 16;
 			break;
 	}
 }
