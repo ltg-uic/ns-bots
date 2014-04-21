@@ -72,9 +72,7 @@ public class NotesUpdater extends AbstractNoteUpdater {
 		 * - One update message for the grid with the latest notes from all groups that updated in the latest 
 		 * 	 refresh cycle
 		 */
-		
-		//sort the list
-		//save the last 9 notes
+	 	//save the last 9 notes
 		
 		//full pick the last one
 		//grid picke the 9 lasts ones
