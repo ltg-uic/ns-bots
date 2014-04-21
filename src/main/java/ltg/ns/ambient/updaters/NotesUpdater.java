@@ -1,10 +1,13 @@
 package ltg.ns.ambient.updaters;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.ns.ambient.model.Note;
+import ltg.ns.comparators.NoteComparator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -25,7 +28,10 @@ public class NotesUpdater extends AbstractNoteUpdater {
 	@Override
 	public synchronized JsonNode fullInit(LTGEvent e) {
 		// TODO this is not random... We need to sort the notes in chronological order and select the most recent
+		
+		//no sorted
 		Note rn = Lists.newArrayList(notes).get(new Random().nextInt(notes.size()));
+		
 		return JsonNodeFactory.instance.objectNode()
 				.put("school", rn.getSchool())
 				.put("class", rn.getClassroom())
@@ -66,6 +72,14 @@ public class NotesUpdater extends AbstractNoteUpdater {
 		 * - One update message for the grid with the latest notes from all groups that updated in the latest 
 		 * 	 refresh cycle
 		 */
+		
+		//sort the list
+		//save the last 9 notes
+		
+		//full pick the last one
+		//grid picke the 9 lasts ones
+		
+		
 		Note rn = Lists.newArrayList(notes).get(new Random().nextInt(notes.size()));
 		eh.generateEvent("notes_update", JsonNodeFactory.instance.objectNode()
 				.put("school", rn.getSchool())
