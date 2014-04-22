@@ -9,12 +9,9 @@ import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventListener;
 import ltg.ns.ambient.pollers.AbstractPoller;
-import ltg.ns.ambient.pollers.MockBurstsPoller;
 import ltg.ns.ambient.pollers.MockNotesPoller;
-import ltg.ns.ambient.updaters.BurstUpdater;
 import ltg.ns.ambient.updaters.NotesNumberUpdater;
 import ltg.ns.ambient.updaters.NotesUpdater;
-import ltg.ns.ambient.updaters.TagsScoreboardUpdater;
 import ltg.ns.ambient.updaters.UpdaterInterface;
 import ltg.ns.ambient.updaters.WordleUpdater;
 
@@ -25,17 +22,17 @@ public class AmbientBot implements Observer {
 	private String classId;
 	// Pollers
 	private AbstractPoller np = new MockNotesPoller();
-	private AbstractPoller ip = new MockBurstsPoller();
+	//private AbstractPoller ip = new MockBurstsPoller();
 	//private AbstractPoller tp = new TagPoller();
 	// Updaters
 	private UpdaterInterface wordleU;
-	private UpdaterInterface imageU; 
-	private UpdaterInterface scoreU;
 	private UpdaterInterface notesNumberU;
 	private UpdaterInterface notesU;
+//	private UpdaterInterface imageU; 
+//	private UpdaterInterface scoreU;
 	// Flags
 	private boolean isNotesPollerAlive = false;
-	private boolean isImagesPollerAlive = false;
+//	private boolean isImagesPollerAlive = false;
 	private boolean isDataValid = false;
 
 
@@ -43,10 +40,10 @@ public class AmbientBot implements Observer {
 		eh = new SingleChatLTGEventHandler(login+"@ltg.evl.uic.edu", login, "nh-test@conference.ltg.evl.uic.edu");
 		classId = class_id;
 		wordleU = new WordleUpdater(eh, class_id);
-		imageU = new BurstUpdater(eh, class_id);
-		scoreU = new TagsScoreboardUpdater(eh, class_id);
 		notesNumberU = new NotesNumberUpdater(eh, class_id);
 		notesU = new NotesUpdater(eh, class_id);
+//		imageU = new BurstUpdater(eh, class_id);
+//		scoreU = new TagsScoreboardUpdater(eh, class_id);
 	}
 
 
@@ -72,17 +69,17 @@ public class AmbientBot implements Observer {
 
 	private void registerObservers() {
 		np.addObserver(this);
-		ip.addObserver(this);
+//		ip.addObserver(this);
 		np.addObserver(notesU);
 		np.addObserver(notesNumberU);
-		np.addObserver(scoreU);
-		ip.addObserver(imageU);
 		np.addObserver(wordleU);
+//		np.addObserver(scoreU);
+//		ip.addObserver(imageU);
 	}
 
 	private void startPolling() {
 		new Thread(np).start();
-		new Thread(ip).start();
+//		new Thread(ip).start();
 	}
 
 	private void registerListeners() {
@@ -111,24 +108,24 @@ public class AmbientBot implements Observer {
 				case "#_notes_grid":
 					eh.generateEvent(m.group(0).toString()+"_r", notesNumberU.gridInit(e));
 					break;
-				case "score_full":
-					eh.generateEvent(m.group(0).toString()+"_r", scoreU.fullInit(e));
-					break;
-				case "score_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", scoreU.gridInit(e));
-					break;
-				case "images_full":
-					eh.generateEvent(m.group(0).toString()+"_r", imageU.fullInit(e));
-					break;
-				case "images_grid":
-					eh.generateEvent(m.group(0).toString()+"_r", imageU.gridInit(e));
-					break;
 				case "wordle_full":
 					eh.generateEvent(m.group(0).toString()+"_r", wordleU.fullInit(e));
 					break;
 				case "wordle_grid":
 					eh.generateEvent(m.group(0).toString()+"_r", wordleU.gridInit(e));
 					break;
+//				case "score_full":
+//					eh.generateEvent(m.group(0).toString()+"_r", scoreU.fullInit(e));
+//					break;
+//				case "score_grid":
+//					eh.generateEvent(m.group(0).toString()+"_r", scoreU.gridInit(e));
+//					break;
+//				case "images_full":
+//					eh.generateEvent(m.group(0).toString()+"_r", imageU.fullInit(e));
+//					break;
+//				case "images_grid":
+//					eh.generateEvent(m.group(0).toString()+"_r", imageU.gridInit(e));
+//					break;
 				default:
 					//throw new RuntimeException("Unknown init message!");
 					System.out.println("Unknown init event: " + e.getEventType());
@@ -151,12 +148,12 @@ public class AmbientBot implements Observer {
 				eh.generateEvent("notes_grid_init_r", notesU.gridInit(e));
 				eh.generateEvent("#_notes_full_init_r", notesNumberU.fullInit(e));
 				eh.generateEvent("#_notes_grid_init_r", notesNumberU.gridInit(e));
-				eh.generateEvent("score_full_init_r", scoreU.fullInit(e));
-				eh.generateEvent("score_grid_init_r", scoreU.gridInit(e));
-				eh.generateEvent("images_full_init_r", imageU.fullInit(e));
-				eh.generateEvent("images_grid_init_r", imageU.gridInit(e));
 				eh.generateEvent("wordle_full_init_r", wordleU.fullInit(e));
 				eh.generateEvent("wordle_grid_init_r", wordleU.gridInit(e));
+//				eh.generateEvent("score_full_init_r", scoreU.fullInit(e));
+//				eh.generateEvent("score_grid_init_r", scoreU.gridInit(e));
+//				eh.generateEvent("images_full_init_r", imageU.fullInit(e));
+//				eh.generateEvent("images_grid_init_r", imageU.gridInit(e));
 			}
 		});
 
@@ -165,13 +162,13 @@ public class AmbientBot implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof MockNotesPoller)
+		if (o instanceof MockNotesPoller) // TODO change this into simple poller and ad tags!!!!!
 			isNotesPollerAlive = true;
-		if (o instanceof MockBurstsPoller)    // TODO change this into simple poller and ad tags!!!!!
-			isImagesPollerAlive = true;
-		if (isImagesPollerAlive && isNotesPollerAlive) {
+//		if (o instanceof MockBurstsPoller)    
+//			isImagesPollerAlive = true;
+		if (isNotesPollerAlive) {
 			np.deleteObserver(this);
-			ip.deleteObserver(this);
+//			ip.deleteObserver(this);
 			isDataValid = true;
 			System.out.println("Listning for events");
 		}

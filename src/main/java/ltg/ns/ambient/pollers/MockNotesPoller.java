@@ -10,6 +10,7 @@ import ltg.ns.ambient.model.Note.Type;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 public class MockNotesPoller extends AbstractPoller {
@@ -33,7 +34,7 @@ public class MockNotesPoller extends AbstractPoller {
 			}
 			// Sleep...
 			try {
-				Thread.sleep(20_000);
+				Thread.sleep(15_000);
 			} catch (InterruptedException e) {
 				return;
 			}
@@ -74,10 +75,16 @@ public class MockNotesPoller extends AbstractPoller {
 						);
 		
 		private static ImmutableSet<String> NOTE_CLASSROOM = 
-				ImmutableSet.of("ben","amanda");
+				ImmutableSet.of("ben","amanda", "7BL", "7MS", "7DM");
 		
-		private static ImmutableSet<String> NOTE_AUTHOR = 
-				ImmutableSet.of("awesomers","boogiers", "cranberries", "diracdeltas", "eminentemmersons", "frillyfurries");
+		private static ImmutableMap<String, ImmutableSet<String>> NOTE_AUTHOR = 
+				ImmutableMap.of(
+						"ben", ImmutableSet.of("robford","saladplusmonkey", "violet", "rofo", "malabalicious", "ridonculous", "mistermonacle", "meatball", "galaxy", "pickles", "pickles2"),
+						"amanda", ImmutableSet.of("ribbit","froginators", "aloneraccoon", "mysloth", "snowflake", "prettiestprincesses", "catbugheat", "unicornprincesses", "bobcats", "turtellyawesome"),
+						"7BL", ImmutableSet.of("eam","mmn", "mjr", "jjs"),
+						"7MS", ImmutableSet.of("beja","ihj", "sjhr", "smmo", "ids","eam"),
+						"7DM", ImmutableSet.of("mng","joc", "gsg", "rss", "lcg", "frillyfurries")
+						);
 		
 		private static Random rnd = new Random();
 		private static int id = 0;
@@ -98,7 +105,7 @@ public class MockNotesPoller extends AbstractPoller {
 			Note n  = Note.buildNoteWithId(Integer.toString(id++))
 					.school("ics")
 					.classroom(randomIn(NOTE_CLASSROOM))
-					.author(randomIn(NOTE_AUTHOR))
+					.author(randomIn(NOTE_AUTHOR.get(randomIn(NOTE_CLASSROOM))))
 					.createdAt(ISODateTimeFormat.dateTime().print(new DateTime()));
 			// Note type
 			Type noteType = Type.values()[rnd.nextInt(Type.values().length)];
