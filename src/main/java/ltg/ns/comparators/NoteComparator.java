@@ -21,9 +21,9 @@ public class NoteComparator implements Comparator<Note>{
 			date1 = formatter.parse(date1string);
 			date2 = formatter.parse(date2string);
 			if(date1.compareTo(date2)>0){
-        		return 1;
-        	}else if(date1.compareTo(date2)<0){
         		return -1;
+        	}else if(date1.compareTo(date2)<0){
+        		return 1;
         	}else if(date1.compareTo(date2)==0){
         		return 0;
         	}else{
