@@ -1,4 +1,6 @@
 package ltg.ns.ambient.updaters;
+import java.util.Random;
+
 import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.ns.ambient.model.Classrooms;
@@ -15,7 +17,7 @@ public class NotesNumberUpdater extends AbstractNoteUpdater {
 	public NotesNumberUpdater(SingleChatLTGEventHandler eh, String classId) {
 		super(eh, classId);
 	}
-	
+
 	/**
 	 * Displays the overall amount of notes posted by this/all classes since the beginning of the unit
 	 */
@@ -33,16 +35,24 @@ public class NotesNumberUpdater extends AbstractNoteUpdater {
 	 */
 	@Override
 	public synchronized JsonNode gridInit(LTGEvent e) {
+		return gridPayloadBuilder(false);
+	}
+	
+	
+	private synchronized JsonNode gridPayloadBuilder(Boolean func) {
+		Random r = new Random();
 		ObjectNode payload = JsonNodeFactory.instance.objectNode();
 		ArrayNode grid = payload.putArray("grid");
-		ImmutableList<String> keys = ImmutableList.copyOf(group_notes_counts.keySet());
-		int grid_size = Math.min(group_notes_counts.size(), 9);
+		ImmutableList<String> keys = ImmutableList.copyOf(groupNotesCounts.keySet());
+		int grid_size = Math.min(groupNotesCounts.size(), 9);
 		for (int i=0; i<grid_size; i++) {
 			ObjectNode note = JsonNodeFactory.instance.objectNode()
 					.put("school", "ics")
 					.put("class", classId)
 					.put("group", keys.get(i))
-					.put("#_notes", group_notes_counts.get(keys.get(i)));
+					.put("#_notes", groupNotesCounts.get(keys.get(r.nextInt(grid_size))));
+			if (func)
+				note.put("updated", true);
 			grid.add(note);
 		}
 		return payload;
@@ -60,7 +70,7 @@ public class NotesNumberUpdater extends AbstractNoteUpdater {
 	 * Send the updated counts for each group in the class
 	 */
 	protected synchronized void gridUpdate() {
-		eh.generateEvent("#_notes_grid_update", gridInit(null));
+		eh.generateEvent("#_notes_grid_update", gridPayloadBuilder(true));
 	}
 }
 

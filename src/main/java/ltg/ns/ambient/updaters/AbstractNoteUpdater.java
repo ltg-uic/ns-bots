@@ -25,7 +25,8 @@ public abstract class AbstractNoteUpdater implements UpdaterInterface {
 	protected ImmutableSet<Note> oldNotes = null;
 	protected ImmutableList<Note> sortedNotes = null;
 	protected ImmutableList<Note> oldSortedNotes = null;
-	protected ImmutableMap<String, Integer> group_notes_counts = null;
+	protected ImmutableMap<String, Integer> groupNotesCounts = null;
+	protected ImmutableMap<String, Integer> oldGroupNotesCounts = null;
 
 
 	public AbstractNoteUpdater(SingleChatLTGEventHandler eh, String classId) {
@@ -46,6 +47,9 @@ public abstract class AbstractNoteUpdater implements UpdaterInterface {
 					return note.getClassroom().equals(classId);
 				}
 			}));
+		} else {
+			oldNotes = notes;
+			notes = ImmutableSet.copyOf((ImmutableSet<Note>) arg);
 		}
 		
 		// Sort notes chronologically
@@ -65,7 +69,8 @@ public abstract class AbstractNoteUpdater implements UpdaterInterface {
 				map_note_counts.put(n.getAuthor(), 1);
 			}
 		}
-		group_notes_counts = ImmutableMap.copyOf(map_note_counts);
+		oldGroupNotesCounts = groupNotesCounts;
+		groupNotesCounts = ImmutableMap.copyOf(map_note_counts);
 
 		// Generate updates only if, after filtering, there are notes that changed
 		if (oldNotes==null || oldNotes.size() != notes.size())

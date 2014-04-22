@@ -70,9 +70,9 @@ public class AmbientBot implements Observer {
 	private void registerObservers() {
 		np.addObserver(this);
 //		ip.addObserver(this);
-//		np.addObserver(notesU);
+		np.addObserver(notesU);
 		np.addObserver(notesNumberU);
-//		np.addObserver(wordleU);
+		np.addObserver(wordleU);
 //		np.addObserver(scoreU);
 //		ip.addObserver(imageU);
 	}

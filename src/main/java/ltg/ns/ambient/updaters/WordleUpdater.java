@@ -23,8 +23,8 @@ public class WordleUpdater extends AbstractNoteUpdater {
 	
 	public WordleUpdater(SingleChatLTGEventHandler eh, String classId) {
 		super(eh, classId);
-		// TODO Auto-generated constructor stub
 	}
+	
 	
 	@Override
 	public synchronized JsonNode fullInit(LTGEvent e) {
@@ -53,13 +53,13 @@ public class WordleUpdater extends AbstractNoteUpdater {
 	}
 
 	@Override
-	protected void fullUpdate() {
+	protected synchronized void fullUpdate() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void gridUpdate() {
+	protected synchronized void gridUpdate() {
 		// TODO Auto-generated method stub
 		
 	}
