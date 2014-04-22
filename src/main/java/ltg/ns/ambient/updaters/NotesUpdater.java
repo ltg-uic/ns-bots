@@ -40,7 +40,7 @@ public class NotesUpdater extends AbstractNoteUpdater {
 	}
 
 
-	private JsonNode gridPayloadBuilder(Boolean func) {
+	private synchronized JsonNode gridPayloadBuilder(Boolean func) {
 		// Select new entries in grid
 		List<Note> newEntriesInGrid = Lists.newArrayList();
 		for (Note n: sortedNotes) {
@@ -68,21 +68,12 @@ public class NotesUpdater extends AbstractNoteUpdater {
 	}
 
 
-	@Override
-	protected void generateUpdate() {
-		// full update pick the last note
-		fullUpdate();
-		// grid update pick the 9 lasts notes
-		gridUpdate();
-	}
-
-
-	protected void fullUpdate(){
+	protected synchronized void fullUpdate(){
 		eh.generateEvent("notes_full_update", fullInit(null));
 	}
 
 
-	protected void gridUpdate() {
+	protected synchronized void gridUpdate() {
 		eh.generateEvent("notes_grid_update", gridPayloadBuilder(true));
 	}
 }

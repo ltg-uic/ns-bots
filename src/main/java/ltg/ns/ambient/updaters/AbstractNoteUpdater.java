@@ -66,11 +66,18 @@ public abstract class AbstractNoteUpdater implements UpdaterInterface {
 			}
 		}
 		group_notes_counts = ImmutableMap.copyOf(map_note_counts);
-			
+
 		// Generate updates only if, after filtering, there are notes that changed
 		if (oldNotes==null || oldNotes.size() != notes.size())
 			generateUpdate();
 	}
 
-	protected abstract void generateUpdate();
+	private void generateUpdate() {
+		fullUpdate();
+		gridUpdate();
+	}
+	
+	protected abstract void fullUpdate();
+	protected abstract void gridUpdate();
+	
 }

@@ -1,5 +1,6 @@
 package ltg.ns.ambient.updaters;
 
+import java.util.Observable;
 import java.util.Random;
 
 import ltg.commons.ltg_event_handler.LTGEvent;
@@ -12,9 +13,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 
-public class TagsScoreboardUpdater extends AbstractNoteUpdater {
+public class TagsScoreboardUpdater extends AbstractUpdater {
 	
-		private ImmutableListMultimap<String, Integer> global_scoreboard;
+	private ImmutableListMultimap<String, Integer> global_scoreboard;
 	private ImmutableList<ImmutableListMultimap<String, Integer>> group_scoreboard;
 	
 	
@@ -62,12 +63,6 @@ public class TagsScoreboardUpdater extends AbstractNoteUpdater {
 		}		
 		return payload;
 	}
-
-	@Override
-	public void generateUpdate() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	
 	static public ImmutableListMultimap<String, Integer> buildGroupScoreboard() {
@@ -78,6 +73,12 @@ public class TagsScoreboardUpdater extends AbstractNoteUpdater {
 				.putAll("bird", r.nextInt(13), r.nextInt(23), r.nextInt(33))
 				.putAll("deer", r.nextInt(2), r.nextInt(12), r.nextInt(22))
 				.build();
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

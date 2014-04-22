@@ -53,9 +53,15 @@ public class WordleUpdater extends AbstractNoteUpdater {
 	}
 
 	@Override
-	public void generateUpdate() {
+	protected void fullUpdate() {
 		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	protected void gridUpdate() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
