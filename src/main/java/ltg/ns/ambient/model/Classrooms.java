@@ -4,9 +4,9 @@ package ltg.ns.ambient.model;
 public enum Classrooms {
 	BEN("ics", "ben", "http://drowsy.badger.encorelab.org/safari-ben/notes"),
 	AMANDA("ics", "amanda", "http://drowsy.badger.encorelab.org/safari-amanda/notes"),
-	BZ_7MS("bzaeds", "7ms", "http://drowsy.badger.encorelab.org/safari-7ms/notes"),
-	BZ_7BL("bzaeds", "7bl", "http://drowsy.badger.encorelab.org/safari-7bl/notes"),
-	BZ_7DM("bzaeds", "7dm", "http://drowsy.badger.encorelab.org/safari-7dm/notes")
+	BZ_7MS("bzaeds", "7MS", "http://drowsy.badger.encorelab.org/safari-7MS/notes"),
+	BZ_7BL("bzaeds", "7BL", "http://drowsy.badger.encorelab.org/safari-7BL/notes"),
+	BZ_7DM("bzaeds", "7DM", "http://drowsy.badger.encorelab.org/safari-7DM/notes")
 	;
 	
     private String school;

@@ -70,6 +70,11 @@ public class Note {
 	public String getBodyEvidence() {
 		return body_evidence;
 	}
+	
+	public String getEasyBody() {
+		String b = "";
+		return b;
+	}
 
 	public String getCreated_at() {
 		return created_at;

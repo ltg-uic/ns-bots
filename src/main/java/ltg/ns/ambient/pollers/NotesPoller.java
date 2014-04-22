@@ -21,10 +21,10 @@ public class NotesPoller extends AbstractPoller {
 		while (!Thread.interrupted()) {
 			// Fetch all new notes
 			Set<Note> allNewNotes = new HashSet<>();
-			for (Classrooms url: Classrooms.values()) {
-				allNewNotes.addAll(parseNotes(url, JSONHTTPClient.GET(url.getNotesURL())));
+			for (Classrooms c: Classrooms.values()) {
+				allNewNotes.addAll(parseNotes(c, JSONHTTPClient.GET(c.getNotesURL())));
 			}
-			if (!allNotes.containsAll(allNewNotes)) {
+			if (allNotes.size() != allNewNotes.size()) {
 				allNotes = ImmutableSet.copyOf(allNewNotes);
 				// Notify observers
 				this.setChanged();
@@ -43,7 +43,7 @@ public class NotesPoller extends AbstractPoller {
 	private ImmutableSet<Note> parseNotes(Classrooms url, JsonNode get) {
 		Set<Note> notes = new HashSet<>();
 		for (JsonNode o: get)
-			if (o.get("published").asBoolean())
+			if (o.get("published")!=null && o.get("published").asBoolean())
 				notes.add(parseNote(url, o));
 		return ImmutableSet.copyOf(notes);
 	}
@@ -55,7 +55,7 @@ public class NotesPoller extends AbstractPoller {
 				.school(url.getSchool())
 				.classroom(url.getClassroom())
 				.author(o.get("author").textValue())
-				.createdAt(o.get("created_at").textValue());
+				.createdAt(o.get("created_at").get("$date").textValue());
 		// Parse type
 		Note.Type type = null;
 		switch (o.get("type").textValue()) {

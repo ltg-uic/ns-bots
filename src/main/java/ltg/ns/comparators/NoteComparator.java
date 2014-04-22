@@ -9,7 +9,7 @@ import java.util.Comparator;
 import ltg.ns.ambient.model.Note;
 
 public class NoteComparator implements Comparator<Note>{
-	final String format = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+	final String format = "yyyy-MM-dd'T'HH:mm:ss.S";
 	final DateFormat formatter = new SimpleDateFormat(format);
 	@Override
 	public int compare(Note o1, Note o2) {

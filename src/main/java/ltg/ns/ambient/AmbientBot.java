@@ -10,6 +10,7 @@ import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventListener;
 import ltg.ns.ambient.pollers.AbstractPoller;
 import ltg.ns.ambient.pollers.MockNotesPoller;
+import ltg.ns.ambient.pollers.NotesPoller;
 import ltg.ns.ambient.updaters.NotesNumberUpdater;
 import ltg.ns.ambient.updaters.NotesUpdater;
 import ltg.ns.ambient.updaters.UpdaterInterface;
@@ -22,6 +23,7 @@ public class AmbientBot implements Observer {
 	private String classId;
 	// Pollers
 	private AbstractPoller np = new MockNotesPoller();
+	//private AbstractPoller np = new NotesPoller();
 	//private AbstractPoller ip = new MockBurstsPoller();
 	//private AbstractPoller tp = new TagPoller();
 	// Updaters
@@ -70,6 +72,8 @@ public class AmbientBot implements Observer {
 	private void registerObservers() {
 		np.addObserver(this);
 //		ip.addObserver(this);
+		
+		// Updaters
 		np.addObserver(notesU);
 		np.addObserver(notesNumberU);
 		np.addObserver(wordleU);

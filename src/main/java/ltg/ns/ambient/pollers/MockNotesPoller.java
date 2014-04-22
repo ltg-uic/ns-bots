@@ -7,9 +7,6 @@ import java.util.Set;
 import ltg.ns.ambient.model.Note;
 import ltg.ns.ambient.model.Note.Type;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -95,6 +92,13 @@ public class MockNotesPoller extends AbstractPoller {
 						"7DM", "bzaeds"
 						);
 		
+		private static ImmutableSet<String> NOTE_DATE = ImmutableSet.of(
+				"2014-04-17T15:23:22.7Z", 
+				"2014-04-14T18:21:52.5Z", 
+				"2014-04-15T18:46:42.5Z",
+				"2014-04-17T16:00:12.0Z",
+				"2014-04-17T15:36:43.3Z");
+		
 		private static Random rnd = new Random();
 		private static int id = 0;
 		
@@ -116,7 +120,7 @@ public class MockNotesPoller extends AbstractPoller {
 					.school(NOTE_SCHOOL.get(c))
 					.classroom(c)
 					.author(randomIn(NOTE_AUTHOR.get(c)))
-					.createdAt(ISODateTimeFormat.dateTime().print(new DateTime()));
+					.createdAt(randomIn(NOTE_DATE));
 			// Note type
 			Type noteType = Type.values()[rnd.nextInt(Type.values().length)];
 			n.withType(noteType);
