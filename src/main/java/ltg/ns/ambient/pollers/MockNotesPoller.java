@@ -83,7 +83,16 @@ public class MockNotesPoller extends AbstractPoller {
 						"amanda", ImmutableSet.of("ribbit","froginators", "aloneraccoon", "mysloth", "snowflake", "prettiestprincesses", "catbugheat", "unicornprincesses", "bobcats", "turtellyawesome"),
 						"7BL", ImmutableSet.of("eam","mmn", "mjr", "jjs"),
 						"7MS", ImmutableSet.of("beja","ihj", "sjhr", "smmo", "ids","eam"),
-						"7DM", ImmutableSet.of("mng","joc", "gsg", "rss", "lcg", "frillyfurries")
+						"7DM", ImmutableSet.of("mng","joc", "gsg", "rss", "lcg")
+						);
+		
+		private static ImmutableMap<String, String> NOTE_SCHOOL= 
+				ImmutableMap.of(
+						"ben", "ics",
+						"amanda", "ics",
+						"7BL", "bzaeds",
+						"7MS", "bzaeds",
+						"7DM", "bzaeds"
 						);
 		
 		private static Random rnd = new Random();
@@ -102,10 +111,11 @@ public class MockNotesPoller extends AbstractPoller {
 		}
 		
 		public static Note buildNote () {
+			String c = randomIn(NOTE_CLASSROOM);
 			Note n  = Note.buildNoteWithId(Integer.toString(id++))
-					.school("ics")
-					.classroom(randomIn(NOTE_CLASSROOM))
-					.author(randomIn(NOTE_AUTHOR.get(randomIn(NOTE_CLASSROOM))))
+					.school(NOTE_SCHOOL.get(c))
+					.classroom(c)
+					.author(randomIn(NOTE_AUTHOR.get(c)))
 					.createdAt(ISODateTimeFormat.dateTime().print(new DateTime()));
 			// Note type
 			Type noteType = Type.values()[rnd.nextInt(Type.values().length)];
