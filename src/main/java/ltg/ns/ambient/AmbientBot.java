@@ -132,6 +132,15 @@ public class AmbientBot implements Observer {
 				}
 			}
 		});
+		/*
+		 * Listens for:
+		 * {
+    		"event": "displays_init",
+    		"payload": {
+        		"class": "ben"
+    		}
+		   }
+		 */
 		eh.registerHandler("displays_init", new SingleChatLTGEventListener() {	
 			@Override
 			public void processEvent(LTGEvent e) {
@@ -162,7 +171,7 @@ public class AmbientBot implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof MockNotesPoller) // TODO change this into simple poller and ad tags!!!!!
+		if (o instanceof MockNotesPoller) // TODO change this into simple poller
 			isNotesPollerAlive = true;
 //		if (o instanceof MockBurstsPoller)    
 //			isImagesPollerAlive = true;
@@ -170,7 +179,7 @@ public class AmbientBot implements Observer {
 			np.deleteObserver(this);
 //			ip.deleteObserver(this);
 			isDataValid = true;
-			System.out.println("Listning for events");
+			System.out.println("Listening for events");
 		}
 	}
 
