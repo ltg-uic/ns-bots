@@ -22,8 +22,8 @@ public class AmbientBot implements Observer {
 	// Class id
 	private String classId;
 	// Pollers
-	private AbstractPoller np = new MockNotesPoller();  // TODO change this to NotesPoller
-	//private AbstractPoller np = new NotesPoller();	// TODO also change it on line 178!!!!
+	//private AbstractPoller np = new MockNotesPoller();  // TODO change this to NotesPoller
+	private AbstractPoller np = new NotesPoller();	// TODO also change it on line 178!!!!
 	//private AbstractPoller ip = new MockBurstsPoller();
 	//private AbstractPoller tp = new TagPoller();
 	// Updaters
@@ -175,7 +175,7 @@ public class AmbientBot implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof MockNotesPoller) // TODO change this into simple poller
+		if (o instanceof NotesPoller) // TODO change this into simple poller
 			isNotesPollerAlive = true;
 //		if (o instanceof MockBurstsPoller)    
 //			isImagesPollerAlive = true;

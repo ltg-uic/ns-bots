@@ -23,12 +23,13 @@ public class NotesUpdater extends AbstractNoteUpdater {
 	 */
 	@Override
 	public synchronized JsonNode fullInit(LTGEvent e) {
-		Note last_note = sortedNotes.get(0);
-		return JsonNodeFactory.instance.objectNode()
-				.put("school", last_note.getSchool())
-				.put("class", last_note.getClassroom())
-				.put("group", last_note.getAuthor())
-				.put("note_body", last_note.getBodyDescription());
+			Note last_note = sortedNotes.get(0);
+			return JsonNodeFactory.instance.objectNode()
+					.put("school", last_note.getSchool())
+					.put("class", last_note.getClassroom())
+					.put("group", last_note.getAuthor())
+					.put("note_body", last_note.getBodyDescription());
+		
 	}
 
 	/**

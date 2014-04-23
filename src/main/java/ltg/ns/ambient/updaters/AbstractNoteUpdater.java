@@ -51,13 +51,13 @@ public abstract class AbstractNoteUpdater implements UpdaterInterface {
 			oldNotes = notes;
 			notes = ImmutableSet.copyOf((ImmutableSet<Note>) arg);
 		}
-		
+
 		// Sort notes chronologically
 		List<Note> notes_list =  Lists.newArrayList(notes);
 		Collections.sort(notes_list, new NoteComparator());	
 		oldSortedNotes = sortedNotes;
 		sortedNotes = ImmutableList.copyOf(notes_list);
-		
+
 		// Count how many notes each group posted
 		HashMap<String, Integer> map_note_counts = Maps.newHashMap();
 		for(Note n: notes){
@@ -74,15 +74,17 @@ public abstract class AbstractNoteUpdater implements UpdaterInterface {
 
 		// Generate updates only if, after filtering, there are notes that changed
 		if (oldNotes==null || oldNotes.size() != notes.size())
-			generateUpdate();
+			if(sortedNotes.size()>0){
+				generateUpdate();
+			}
 	}
 
 	private void generateUpdate() {
 		fullUpdate();
 		gridUpdate();
 	}
-	
+
 	protected abstract void fullUpdate();
 	protected abstract void gridUpdate();
-	
+
 }
