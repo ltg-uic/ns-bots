@@ -46,11 +46,12 @@ public class NotesNumberUpdater extends AbstractNoteUpdater {
 		ImmutableList<String> keys = ImmutableList.copyOf(groupNotesCounts.keySet());
 		int grid_size = Math.min(groupNotesCounts.size(), 9);
 		for (int i=0; i<grid_size; i++) {
+			int rand = r.nextInt(groupNotesCounts.size());
 			ObjectNode note = JsonNodeFactory.instance.objectNode()
 					.put("school", Classrooms.getSchooForClass(classId))
 					.put("class", classId)
-					.put("group", keys.get(i))
-					.put("#_notes", groupNotesCounts.get(keys.get(i))); //?
+					.put("group", keys.get(rand))
+					.put("#_notes", groupNotesCounts.get(keys.get(rand))); //?
 			if (func)
 				note.put("updated", true);
 			grid.add(note);

@@ -44,7 +44,8 @@ public class WordleUpdater extends AbstractNoteUpdater {
 	public synchronized JsonNode gridInit(LTGEvent e) {
 		
 		HashMap<String, String> map_wordles = Maps.newHashMap();
-		for(Note n: notes){
+		
+		for(Note n: sortedNotes){
 			if(map_wordles.containsKey(n.getAuthor())){
 				String wordle_text = map_wordles.get(n.getAuthor());
 				map_wordles.put(n.getAuthor(), wordle_text+n.getBodyDescription());
@@ -61,13 +62,13 @@ public class WordleUpdater extends AbstractNoteUpdater {
 		int grid_size = Math.min(map_wordles.size(), 9);
 
 		for (int i=0; i<grid_size; i++) {
-			ObjectNode note = JsonNodeFactory.instance.objectNode()
+			int rand = r.nextInt(groupNotesCounts.size());
+			ObjectNode wordle = JsonNodeFactory.instance.objectNode()
 					.put("school", Classrooms.getSchooForClass(classId))
 					.put("class", classId)
-					.put("group", keys.get(i))
-					.put("#_notes", map_wordles.get(i));
-		
-			grid.add(note);
+					.put("group", keys.get(rand))
+					.put("wordle_text", map_wordles.get(rand));
+			grid.add(wordle);
 		}
 		
 		return payload;
