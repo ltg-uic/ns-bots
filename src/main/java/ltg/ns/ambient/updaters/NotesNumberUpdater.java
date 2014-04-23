@@ -47,10 +47,10 @@ public class NotesNumberUpdater extends AbstractNoteUpdater {
 		int grid_size = Math.min(groupNotesCounts.size(), 9);
 		for (int i=0; i<grid_size; i++) {
 			ObjectNode note = JsonNodeFactory.instance.objectNode()
-					.put("school", "ics")
+					.put("school", Classrooms.getSchooForClass(classId))
 					.put("class", classId)
 					.put("group", keys.get(i))
-					.put("#_notes", groupNotesCounts.get(keys.get(r.nextInt(grid_size))));
+					.put("#_notes", groupNotesCounts.get(keys.get(i))); //?
 			if (func)
 				note.put("updated", true);
 			grid.add(note);
