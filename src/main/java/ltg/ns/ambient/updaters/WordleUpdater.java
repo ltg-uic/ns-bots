@@ -42,9 +42,7 @@ public class WordleUpdater extends AbstractNoteUpdater {
 
 	@Override
 	public synchronized JsonNode gridInit(LTGEvent e) {
-		
 		HashMap<String, String> map_wordles = Maps.newHashMap();
-		
 		for(Note n: sortedNotes){
 			if(map_wordles.containsKey(n.getAuthor())){
 				String wordle_text = map_wordles.get(n.getAuthor());
@@ -67,7 +65,7 @@ public class WordleUpdater extends AbstractNoteUpdater {
 					.put("school", Classrooms.getSchooForClass(classId))
 					.put("class", classId)
 					.put("group", keys.get(rand))
-					.put("wordle_text", map_wordles.get(rand));
+					.put("wordle_text", map_wordles.get(keys.get(rand)));
 			grid.add(wordle);
 		}
 		
