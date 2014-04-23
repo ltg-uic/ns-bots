@@ -22,7 +22,7 @@ public class Note {
 	private String body_explanation;
 	private String body_evidence;
 	private String created_at;
-
+	
 	private Note(String id) {
 		this.id = id;
 	}

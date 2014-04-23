@@ -31,7 +31,7 @@ public class MockNotesPoller extends AbstractPoller {
 			}
 			// Sleep...
 			try {
-				Thread.sleep(15_000);
+				Thread.sleep(POLL_INTERVAL);
 			} catch (InterruptedException e) {
 				return;
 			}
@@ -53,8 +53,8 @@ public class MockNotesPoller extends AbstractPoller {
 						"Related females often share a common area, while unrelated males live together in groups of up to four animals to maintain their positions against foreign males during the mating season, and other potential invaders",
 						"Home range sizes vary anywhere from 3 hectares (7 acres) for females in cities to 50 km2 (20 sq mi) for males in prairies.",
 						"After a gestation period of about 65 days, two to five young, known as \"kits\", are born in spring.",
-						"This Latin word was borrowed from the Ancient Greek word σκίουρος, skiouros, which means shadow-tailed, referring to the bushy appendage possessed by many of its members",
-						"The native Old English word for the squirrel, ācweorna, survived only into Middle English (as aquerne) before being replaced",
+						"This Latin word was borrowed from the Ancient Greek word , skiouros, which means shadow-tailed, referring to the bushy appendage possessed by many of its members",
+						"The native Old English word for the squirrel,cweorna, survived only into Middle English (as aquerne) before being replaced",
 						"The kits are subsequently raised by their mother until dispersion in late fall. Although captive raccoons have been known to live over 20 years, their average life expectancy in the wild is only 1.8 to 3.1 years. ",
 						"In many areas, hunting and vehicular injury are the two most common causes of death.",
 						"Squirrels belong to family Sciuridae of small or medium-size rodents.",

@@ -7,7 +7,6 @@ import ltg.commons.JSONHTTPClient;
 import ltg.ns.ambient.model.Classrooms;
 import ltg.ns.ambient.model.Note;
 import ltg.ns.ambient.model.Note.Type;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableSet;
 
@@ -24,12 +23,17 @@ public class NotesPoller extends AbstractPoller {
 			for (Classrooms c: Classrooms.values()) {
 				allNewNotes.addAll(parseNotes(c, JSONHTTPClient.GET(c.getNotesURL())));
 			}
-			if (allNotes.size() != allNewNotes.size()) {
-				allNotes = ImmutableSet.copyOf(allNewNotes);
+			ImmutableSet<Note> allNewNotes1 = 
+					ImmutableSet.<Note>builder()
+					.addAll(allNewNotes)
+					.build();
+
+			//if (!allNotes.containsAll(allNewNotes1)){
+				allNotes = ImmutableSet.copyOf(allNewNotes1);
 				// Notify observers
 				this.setChanged();
 				this.notifyObservers(allNotes);
-			}
+			//}
 			// Sleep...
 			try {
 				Thread.sleep(POLL_INTERVAL);
@@ -42,9 +46,12 @@ public class NotesPoller extends AbstractPoller {
 
 	private ImmutableSet<Note> parseNotes(Classrooms url, JsonNode get) {
 		Set<Note> notes = new HashSet<>();
-		for (JsonNode o: get)
-			if (o.get("published")!=null && o.get("published").asBoolean())
-				notes.add(parseNote(url, o));
+		for (JsonNode o: get){
+			if (o.get("published")!=null && o.get("published").asBoolean()){
+				if(parseNote(url, o) != null)
+					notes.add(parseNote(url, o));
+			}
+		}
 		return ImmutableSet.copyOf(notes);
 	}
 
@@ -56,6 +63,8 @@ public class NotesPoller extends AbstractPoller {
 				.classroom(url.getClassroom())
 				.author(o.get("author").textValue())
 				.createdAt(o.get("created_at").get("$date").textValue());
+
+
 		// Parse type
 		Note.Type type = null;
 		switch (o.get("type").textValue()) {
@@ -74,10 +83,10 @@ public class NotesPoller extends AbstractPoller {
 		}
 		// Parse body based on type
 		String b_title = o.get("body").get("title")!=null ? o.get("body").get("title").textValue() : null;
-		String b_description = o.get("body").get("question")!=null ? o.get("body").get("question").textValue() : null;
-		String b_question = o.get("body").get("hypothesis")!=null ? o.get("body").get("hypothesis").textValue() : null;
-		String b_hypothesis = o.get("body").get("explanation")!=null ? o.get("body").get("explanation").textValue() : null;
-		String b_explanation = o.get("body").get("description")!=null ? o.get("body").get("description").textValue() : null;
+		String b_description = o.get("body").get("description")!=null ? o.get("body").get("description").textValue() : null;
+		String b_question = o.get("body").get("question")!=null ? o.get("body").get("question").textValue() : null;
+		String b_hypothesis = o.get("body").get("hypothesis")!=null ? o.get("body").get("hypothesis").textValue() : null;
+		String b_explanation = o.get("body").get("explanation")!=null ? o.get("body").get("explanation").textValue() : null;
 		String b_evidence = o.get("body").get("evidence")!=null ? o.get("body").get("evidence").textValue() : null;
 		switch (type) {
 		case cross_cutting:
@@ -95,6 +104,12 @@ public class NotesPoller extends AbstractPoller {
 		default:
 			new RuntimeException("Unknown note type");
 		}
-		return n;
+
+		if(n.getBodyDescription().equals(null)){
+			return null;
+		}
+		else{
+			return n;
+		}
 	}
 }

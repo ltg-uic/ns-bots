@@ -4,6 +4,6 @@ import java.util.Observable;
 
 public abstract class AbstractPoller extends Observable implements Runnable {
 	
-	public final static long POLL_INTERVAL = 30_000;
+	public final static long POLL_INTERVAL = 10_000;
 
 }

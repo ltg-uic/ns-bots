@@ -1,5 +1,6 @@
 package ltg.ns.ambient.updaters;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +35,6 @@ public abstract class AbstractNoteUpdater implements UpdaterInterface {
 		this.classId = classId;
 	}
 
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized void update(Observable o, Object arg) {
@@ -51,7 +51,7 @@ public abstract class AbstractNoteUpdater implements UpdaterInterface {
 			oldNotes = notes;
 			notes = ImmutableSet.copyOf((ImmutableSet<Note>) arg);
 		}
-
+		
 		// Sort notes chronologically
 		List<Note> notes_list =  Lists.newArrayList(notes);
 		Collections.sort(notes_list, new NoteComparator());	
