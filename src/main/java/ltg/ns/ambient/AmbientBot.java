@@ -22,8 +22,8 @@ public class AmbientBot implements Observer {
 	// Class id
 	private String classId;
 	// Pollers
-	private AbstractPoller np = new MockNotesPoller();
-	//private AbstractPoller np = new NotesPoller();
+	private AbstractPoller np = new MockNotesPoller();  // TODO change this to NotesPoller
+	//private AbstractPoller np = new NotesPoller();	// TODO also change it on line 178!!!!
 	//private AbstractPoller ip = new MockBurstsPoller();
 	//private AbstractPoller tp = new TagPoller();
 	// Updaters

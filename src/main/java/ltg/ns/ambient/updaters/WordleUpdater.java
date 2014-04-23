@@ -1,7 +1,6 @@
 package ltg.ns.ambient.updaters;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import ltg.commons.ltg_event_handler.LTGEvent;
@@ -14,13 +13,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class WordleUpdater extends AbstractNoteUpdater {
-
-	private Map<String, String> wordles = Maps.newHashMap();
 	
 	public WordleUpdater(SingleChatLTGEventHandler eh, String classId) {
 		super(eh, classId);
@@ -42,6 +37,10 @@ public class WordleUpdater extends AbstractNoteUpdater {
 
 	@Override
 	public synchronized JsonNode gridInit(LTGEvent e) {
+		return gridPayloadBuilder(false);
+	}
+	
+	private synchronized JsonNode gridPayloadBuilder(Boolean func) {
 		HashMap<String, String> map_wordles = Maps.newHashMap();
 		for(Note n: sortedNotes){
 			if(map_wordles.containsKey(n.getAuthor())){
@@ -66,9 +65,10 @@ public class WordleUpdater extends AbstractNoteUpdater {
 					.put("class", classId)
 					.put("group", keys.get(rand))
 					.put("wordle_text", map_wordles.get(keys.get(rand)));
+			if (func)
+				wordle.put("updated", true);
 			grid.add(wordle);
 		}
-		
 		return payload;
 	}
 
@@ -80,7 +80,7 @@ public class WordleUpdater extends AbstractNoteUpdater {
 
 	@Override
 	protected synchronized void gridUpdate() {
-		eh.generateEvent("wordle_grid_update", gridInit(null));		
+		eh.generateEvent("wordle_grid_update", gridPayloadBuilder(true));		
 	}
 
 }

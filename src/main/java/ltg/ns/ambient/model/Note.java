@@ -71,11 +71,6 @@ public class Note {
 		return body_evidence;
 	}
 	
-	public String getEasyBody() {
-		String b = "";
-		return b;
-	}
-
 	public String getCreated_at() {
 		return created_at;
 	}
