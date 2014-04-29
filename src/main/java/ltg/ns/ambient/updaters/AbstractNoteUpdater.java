@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Observable;
 
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
+import ltg.ns.ambient.model.Info;
 import ltg.ns.ambient.model.Note;
 import ltg.ns.comparators.NoteComparator;
 
@@ -26,8 +27,8 @@ public abstract class AbstractNoteUpdater implements UpdaterInterface {
 	protected ImmutableSet<Note> oldNotes = null;
 	protected ImmutableList<Note> sortedNotes = null;
 	protected ImmutableList<Note> oldSortedNotes = null;
-	protected ImmutableMap<String, Integer> groupNotesCounts = null;
-	protected ImmutableMap<String, Integer> oldGroupNotesCounts = null;
+	protected ImmutableMap<String, Info> groupNotesCounts = null;
+	protected ImmutableMap<String, Info> oldGroupNotesCounts = null;
 
 
 	public AbstractNoteUpdater(SingleChatLTGEventHandler eh, String classId) {
@@ -59,14 +60,17 @@ public abstract class AbstractNoteUpdater implements UpdaterInterface {
 		sortedNotes = ImmutableList.copyOf(notes_list);
 
 		// Count how many notes each group posted
-		HashMap<String, Integer> map_note_counts = Maps.newHashMap();
+		HashMap<String, Info> map_note_counts = Maps.newHashMap();
 		for(Note n: notes){
 			if(map_note_counts.containsKey(n.getAuthor())){
-				int count = map_note_counts.get(n.getAuthor());
-				map_note_counts.put(n.getAuthor(), count+1);
+				Info info = map_note_counts.get(n.getAuthor());
+				int count = info.getCount();
+				info.setCount(count + 1);
+				map_note_counts.put(n.getAuthor(), info);
 			}
 			else {
-				map_note_counts.put(n.getAuthor(), 1);
+				Info info = new Info(n.getAuthor(), n.getClassroom(), n.getSchool(), 1, "");				
+				map_note_counts.put(n.getAuthor(), info);
 			}
 		}
 		oldGroupNotesCounts = groupNotesCounts;

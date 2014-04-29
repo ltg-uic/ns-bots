@@ -4,6 +4,7 @@ import java.util.Random;
 import ltg.commons.ltg_event_handler.LTGEvent;
 import ltg.commons.ltg_event_handler.SingleChatLTGEventHandler;
 import ltg.ns.ambient.model.Classrooms;
+import ltg.ns.ambient.model.Note;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -23,12 +24,15 @@ public class NotesNumberUpdater extends AbstractNoteUpdater {
 	 */
 	@Override
 	public synchronized JsonNode fullInit(LTGEvent e) {
-		return JsonNodeFactory.instance.objectNode()
-				.put("school", Classrooms.getSchooForClass(classId))
-				.put("class", classId)
-				.put("#_note", notes.size());
+		ObjectNode payload = JsonNodeFactory.instance.objectNode();
+		if(classId.equals("all")) payload.put("type", "all");
+		else payload.put("type", classId);
+		
+		payload.put("school", Classrooms.getSchooForClass(classId))
+		.put("class", classId)
+		.put("#_note", notes.size());
+		return payload;
 	}
-
 
 	/**
 	 * Displays the overall amount of notes posted by all the groups in this/all classes since the beginning of the unit
@@ -37,21 +41,26 @@ public class NotesNumberUpdater extends AbstractNoteUpdater {
 	public synchronized JsonNode gridInit(LTGEvent e) {
 		return gridPayloadBuilder(false);
 	}
-	
-	
+
+
 	private synchronized JsonNode gridPayloadBuilder(Boolean func) {
 		Random r = new Random();
 		ObjectNode payload = JsonNodeFactory.instance.objectNode();
+
+		if(classId.equals("all")) payload.put("type", "all");
+		else payload.put("type", classId);
+
 		ArrayNode grid = payload.putArray("grid");
 		ImmutableList<String> keys = ImmutableList.copyOf(groupNotesCounts.keySet());
+
 		int grid_size = Math.min(groupNotesCounts.size(), 9);
 		for (int i=0; i<grid_size; i++) {
 			int rand = r.nextInt(groupNotesCounts.size());
 			ObjectNode note = JsonNodeFactory.instance.objectNode()
-					.put("school", Classrooms.getSchooForClass(classId))
-					.put("class", classId)
+					.put("school", groupNotesCounts.get(keys.get(rand)).getSchool())
+					.put("class", groupNotesCounts.get(keys.get(rand)).getClassroom())
 					.put("group", keys.get(rand))
-					.put("#_notes", groupNotesCounts.get(keys.get(rand))); //?
+					.put("#_notes", groupNotesCounts.get(keys.get(rand)).getCount()); //?
 			if (func)
 				note.put("updated", true);
 			grid.add(note);

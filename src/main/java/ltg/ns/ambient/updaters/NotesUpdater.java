@@ -23,13 +23,16 @@ public class NotesUpdater extends AbstractNoteUpdater {
 	 */
 	@Override
 	public synchronized JsonNode fullInit(LTGEvent e) {
-			Note last_note = sortedNotes.get(0);
-			return JsonNodeFactory.instance.objectNode()
-					.put("school", last_note.getSchool())
-					.put("class", last_note.getClassroom())
-					.put("group", last_note.getAuthor())
-					.put("note_body", last_note.getBodyDescription());
+		Note last_note = sortedNotes.get(0);
+		ObjectNode payload = JsonNodeFactory.instance.objectNode();
+		if(classId.equals("all")) payload.put("type", "all");
+		else payload.put("type", classId);
+		payload.put("school", last_note.getSchool())
+		.put("class", last_note.getClassroom())
+		.put("group", last_note.getAuthor())
+		.put("note_body", last_note.getBodyDescription());
 		
+		return payload;
 	}
 
 	/**
@@ -53,6 +56,11 @@ public class NotesUpdater extends AbstractNoteUpdater {
 		int grid_size = Math.min(sortedNotes.size(), 9);
 		// Assemble object
 		ObjectNode payload = JsonNodeFactory.instance.objectNode();
+		
+		
+		if(classId.equals("all")) payload.put("type", "all");
+		else payload.put("type", classId);
+		
 		ArrayNode grid = payload.putArray("grid"); 
 		for (int i=0; i<grid_size; i++) {
 			Note note = sortedNotes.get(i);

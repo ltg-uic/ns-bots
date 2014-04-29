@@ -28,12 +28,12 @@ public class NotesPoller extends AbstractPoller {
 					.addAll(allNewNotes)
 					.build();
 
-			//if (!allNotes.containsAll(allNewNotes1)){
+			if (!allNotes.containsAll(allNewNotes1)){
 				allNotes = ImmutableSet.copyOf(allNewNotes1);
 				// Notify observers
 				this.setChanged();
 				this.notifyObservers(allNotes);
-			//}
+			}
 			// Sleep...
 			try {
 				Thread.sleep(POLL_INTERVAL);
